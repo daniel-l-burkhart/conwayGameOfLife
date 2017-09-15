@@ -64,6 +64,7 @@ GameOfLife.prototype.getPopulation = function () {
     });
 
     this.population = aliveCount;
+    this.populationText.text(this.population);
 };
 
 
@@ -195,6 +196,31 @@ GameOfLife.prototype.updateGeneration = function () {
     }, 100);
 };
 
+GameOfLife.prototype.updateSingleCell = function (id, value) {
+
+    var coords = id.match(/\d+/g);
+
+    var yCoordinate = parseInt(coords.pop());
+    var xCoordinate = parseInt(coords.pop());
+
+
+    var localBoard = this.currBoard;
+
+    localBoard.forEach(function (row, yIndex) {
+
+        row.forEach(function (cell, xIndex) {
+
+            if (yIndex === yCoordinate && xIndex === xCoordinate) {
+                cell.item.setMortality(value);
+            }
+
+        });
+    });
+
+    this.getPopulation();
+
+};
+
 function buildGrid(rowSize, colSize, random) {
     var grid = [];
 
@@ -205,7 +231,7 @@ function buildGrid(rowSize, colSize, random) {
 
             if (random) {
 
-                var startCondition = Math.round(Math.random());
+                var startCondition = Math.round(Math.random() * 0.7);
                 row.push(startCondition);
             }
             else {
@@ -222,11 +248,15 @@ function makeCellsClickable() {
 
     $('td').click(function () {
 
+        var cellID = $(this).attr("id");
+
         if ($(this).attr("class") === 'alive') {
 
+            gameOfLife.updateSingleCell(cellID, 0);
             $(this).removeClass('alive');
 
         } else {
+            gameOfLife.updateSingleCell(cellID, 1);
             $(this).addClass('alive');
         }
     });
@@ -237,7 +267,7 @@ var grid = [];
 var gameOfLife = '';
 
 window.onload = function () {
-    grid = buildGrid(50, 50, false);
+    grid = buildGrid(50, 50, true);
     gameOfLife = new GameOfLife(grid);
     makeCellsClickable();
 };

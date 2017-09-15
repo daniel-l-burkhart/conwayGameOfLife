@@ -1,26 +1,23 @@
+/**
+ * Button event for starting the game.
+ */
 function startGame() {
-
-    /*
-        setTimeout(function () {
-            self.setCellNextStates();
-        }, 100);
-        */
-
+    window.gameOfLife.startGame();
 }
 
-
+/**
+ * Button even for stopping the game.
+ */
 function stopGame() {
-
-
+    window.gameOfLife.stopGame();
 }
 
 /**
  * Updates the population by one generation.
  */
 function incrementOneGeneration() {
-    gameOfLife.updateGeneration();
+    window.gameOfLife.updateGeneration();
 }
-
 
 /**
  * Updates the population by 23 generations
@@ -28,7 +25,7 @@ function incrementOneGeneration() {
 function incrementTwentyThreeGenerations() {
 
     for (var i = 0; i < 23; i++) {
-        gameOfLife.updateGeneration();
+        window.gameOfLife.updateGeneration();
     }
 }
 
@@ -39,11 +36,13 @@ function resetTheGame() {
     var rows = document.getElementById('gameTable').rows.length;
     var cols = document.getElementById('gameTable').rows[0].cells.length;
 
-    grid = buildGrid(rows, cols, false);
-    gameOfLife = new GameOfLife(grid);
+    $("#gameTable").find("tr").remove();
+
+    window.grid = buildGrid(rows, cols, false);
+    window.gameOfLife = new GameOfLife(grid);
+    makeCellsClickable();
 
 }
-
 
 /**
  * Starts the game over with a random population.
@@ -52,8 +51,9 @@ function randomPopulation() {
     var rows = document.getElementById('gameTable').rows.length;
     var cols = document.getElementById('gameTable').rows[0].length;
 
-    grid = buildGrid(rows, cols, true);
-    gameOfLife = new GameOfLife(grid);
+    window.grid = buildGrid(rows, cols, true);
+    window.gameOfLife = new GameOfLife(grid);
+    makeCellsClickable();
 
 }
 

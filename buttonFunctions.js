@@ -65,10 +65,11 @@ function addRow() {
     var row = table.insertRow(table.rows.length);
 
     for (var col = 0; col < table.rows[0].cells.length; col++) {
-        var cell = row.insertCell(col);
-        var txt = document.createTextNode(row.rowIndex.toString() + ', ' + col.toString());
-        cell.appendChild(txt);
+
+        row.insertCell(col);
     }
+
+    makeCellsClickable();
 }
 
 /**
@@ -79,11 +80,9 @@ function addColumn() {
 
     for (var currRow = 0; currRow < table.rows.length; currRow++) {
 
-        var cell = table.rows[currRow].insertCell(table.rows[currRow].cells.length);
-        var lastColIndex = table.rows[0].cells.length - 1;
-        var txt = document.createTextNode(currRow.toString() + ', ' + lastColIndex.toString());
-        cell.appendChild(txt);
+        table.rows[currRow].insertCell(table.rows[currRow].cells.length);
     }
+    makeCellsClickable();
 }
 
 /**

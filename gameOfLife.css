@@ -1,1 +1,23 @@
 /*GAME OF LIFE CSS */
+
+.gameTable {
+    margin: 0 auto;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.gameTable td {
+    padding: 0;
+    background: #fff !important;
+    border: 1px solid #ddd;
+}
+
+.gameTable td:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+}
+
+.gameTable td.alive {
+    background: #00a6ca !important;
+}

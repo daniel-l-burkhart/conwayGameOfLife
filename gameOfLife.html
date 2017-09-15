@@ -4,6 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Daniel Burkhart GAME OF LIFE!!!</title>
+
+    <!-- BOOTSTRAP stuff -->
     <script type="application/javascript"
             src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script type="application/javascript"
@@ -11,9 +13,11 @@
     <link rel="stylesheet" type="text/css"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
 
+    <!-- JQUERY stuff -->
     <script type="application/javascript"
             src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
+    <!-- My files. -->
     <link rel="stylesheet" href="gameOfLife.css" type="text/css"/>
 
     <script type="text/javascript" src="Cell.js"></script>
@@ -25,10 +29,11 @@
 <h1>Conway's Game Of Life</h1>
 
 <hr>
-<div class="col-lg-8">
+<div class="col-lg-9">
     <h4>Generation: <span id="generation"> </span></h4>
     <h4>Population: <span id="population"> </span></h4>
-    <table id="gameTable" border="1" cellpadding="3">
+
+    <table id="gameTable" class="gameTable" border="1" cellpadding="3">
 
 
     </table>
@@ -36,67 +41,59 @@
 
 </div>
 
-<div class="col-lg-4">
+<div class="col-lg-3 container">
+
+    <div class="jumbotron">
 
     <h4> GAME BUTTONS</h4>
-    <table>
-        <tr>
-            <td>
-                <button onclick="return startGame()">START GAME</button>
-            </td>
-            <td>
-                <button onclick="return stopGame()">STOP GAME</button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button onclick="return incrementOneGeneration()">Increment One Generation</button>
-            </td>
-            <td>
-                <button onclick="return incrementTwentyThreeGenerations()"> Increment 23 Generations</button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <button onclick="return resetTheGame()">Reset the Game!</button>
-            </td>
-            <td>
-                <button onclick="return randomPopulation()"> RANDOM POPULATION!!!</button>
-            </td>
 
-        </tr>
 
-    </table>
+        <div class="btn-group">
+            <button class="btn btn-success" onclick="startGame()">START GAME</button>
+
+            <button class="btn btn-danger" onclick="stopGame()"> STOP GAME!</button>
+        </div>
+
+        <br/>
+        <br/>
+
+        <div class="btn-group-vertical">
+            <button class="btn btn-info" onclick="return incrementOneGeneration()">Increment One Generation</button>
+            <button class="btn btn-info" onclick="return incrementTwentyThreeGenerations()"> Increment 23 Generations
+            </button>
+        </div>
+
+        <br/>
+        <br/>
+        <div class="btn=group">
+            <button class="btn btn-warning" onclick="return resetTheGame()">Reset the Game!</button>
+            <button class="btn btn-warning" onclick="return randomPopulation()"> RANDOM POPULATION!!!</button>
+
+        </div>
+        <br/>
 
     <h4>Table Buttons</h4>
-    <table>
 
-        <tr>
-            <td>
-                <button onclick="addRow()" name="appendRow">Add Row</button>
-            </td>
-            <td>
-                <button onclick="addColumn()" name="appendRow">Add Column</button>
-            </td>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="addRow()" name="appendRow">Add Row</button>
+            <button class="btn btn-primary" onclick="addColumn()" name="appendRow">Add Column</button>
+        </div>
+        <br/>
+        <br/>
 
-        </tr>
-        <tr>
-            <td>
-                <button onclick="deleteLastRow()" name="deleteRow">Delete Row</button>
-            </td>
-            <td>
-                <button onclick="deleteLastColumn()" name="deleteColumn">Delete Column</button>
-            </td>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="deleteLastRow()" name="deleteRow">Delete Row</button>
+            <button class="btn btn-primary" onclick="deleteLastColumn()" name="deleteColumn">Delete Column</button>
+        </div>
 
-        </tr>
+        <br/>
+        <br/>
 
-        <tr>
-            <td>
-                <button onclick="resetToOrigin()" name="reset"> Reset To origin</button>
-            </td>
-        </tr>
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="resetToOrigin()" name="reset"> Reset To origin</button>
+        </div>
 
-    </table>
+    </div>
 </div>
 </body>
 

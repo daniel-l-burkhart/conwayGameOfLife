@@ -216,7 +216,6 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
     var yCoordinate = parseInt(coordinates.pop());
     var xCoordinate = parseInt(coordinates.pop());
 
-
     var localBoard = this.currBoard;
 
     localBoard.forEach(function (row, yIndex) {

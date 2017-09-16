@@ -21,9 +21,11 @@
     <link rel="stylesheet" href="gameOfLife.css" type="text/css"/>
 
     <script type="text/javascript" src="Cell.js"></script>
+    <script type="text/javascript" src="StatesOfLife.js"></script>
     <script type="text/javascript" src="gameOfLife.js"></script>
+    <script type="text/javascript" src="gameOfLifeController.js"></script>
+    <script type="text/javascript" src="gameOfLifeView.js"></script>
     <script type="text/javascript" src="main.js"></script>
-    <script type="text/javascript" src="buttonFunctions.js"></script>
 
 </head>
 <body>
@@ -51,25 +53,30 @@
 
 
         <div class="btn-group">
-            <button class="btn btn-success" onclick="startGame()">START GAME</button>
+            <button class="btn btn-success" onclick="GameOfLifeView.prototype.startGame()">START GAME</button>
 
-            <button class="btn btn-danger" onclick="stopGame()"> STOP GAME!</button>
+            <button class="btn btn-danger" onclick="GameOfLifeView.prototype.stopGame()"> STOP GAME!</button>
         </div>
 
         <br/>
         <br/>
 
         <div class="btn-group-vertical">
-            <button class="btn btn-info" onclick="return incrementOneGeneration()">Increment One Generation</button>
-            <button class="btn btn-info" onclick="return incrementTwentyThreeGenerations()"> Increment 23 Generations
+            <button class="btn btn-info" onclick=" GameOfLifeView.prototype.incrementOneGeneration()">Increment One
+                Generation
+            </button>
+            <button class="btn btn-info" onclick="GameOfLifeView.prototype.incrementTwentyThreeGenerations()"> Increment
+                23 Generations
             </button>
         </div>
 
         <br/>
         <br/>
         <div class="btn=group">
-            <button class="btn btn-warning" onclick="return resetTheGame()">Reset the Game!</button>
-            <button class="btn btn-warning" onclick="return randomPopulation()"> RANDOM POPULATION!!!</button>
+            <button class="btn btn-warning" onclick="GameOfLifeView.prototype.resetTheGame()">Reset the Game!</button>
+            <button class="btn btn-warning" onclick="GameOfLifeView.prototype.randomPopulation()"> RANDOM
+                POPULATION!!!
+            </button>
 
         </div>
         <br/>
@@ -77,22 +84,30 @@
     <h4>Table Buttons</h4>
 
         <div class="btn-group">
-            <button class="btn btn-primary" onclick="addRow()" name="appendRow">Add Row</button>
-            <button class="btn btn-primary" onclick="addColumn()" name="appendRow">Add Column</button>
+            <button class="btn btn-primary" onclick="GameOfLifeView.prototype.addRow()" name="appendRow">Add Row
+            </button>
+            <button class="btn btn-primary" onclick="GameOfLifeView.prototype.addColumn()" name="appendRow">Add Column
+            </button>
         </div>
         <br/>
         <br/>
 
         <div class="btn-group">
-            <button class="btn btn-primary" onclick="deleteLastRow()" name="deleteRow">Delete Row</button>
-            <button class="btn btn-primary" onclick="deleteLastColumn()" name="deleteColumn">Delete Column</button>
+            <button class="btn btn-primary" onclick="GameOfLifeView.prototype.deleteLastRow()" name="deleteRow">Delete
+                Row
+            </button>
+            <button class="btn btn-primary" onclick="GameOfLifeView.prototype.deleteLastColumn()" name="deleteColumn">
+                Delete Column
+            </button>
         </div>
 
         <br/>
         <br/>
 
         <div class="btn-group">
-            <button class="btn btn-primary" onclick="resetToOrigin()" name="reset"> Reset To origin</button>
+            <button class="btn btn-primary" onclick="GameOfLifeView.prototype.resetToOrigin()" name="reset"> Reset To
+                origin
+            </button>
         </div>
 
     </div>

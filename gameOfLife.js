@@ -1,15 +1,4 @@
 /**
- * "Enum" to make understanding the rules of the game easier.
- * @type {{DEAD: number, ALIVE: number, RESURRECTED: number, LIVES_ON: number}}
- */
-var StatesOfLife = {
-    DEAD: 0,
-    ALIVE: 1,
-    RESURRECTED: 1,
-    LIVES_ON: 1
-};
-
-/**
  * Game of life "Class" that handles the "back end" work of the game.
  * @param grid
  * The grid that ties to the table
@@ -17,9 +6,12 @@ var StatesOfLife = {
  * Requires the grid to be built.
  */
 function GameOfLife(grid) {
+
     var self = this;
 
     this.currGeneration = 0;
+
+    this.grid = grid;
 
     this.generationText = $('#generation');
     this.populationText = $('#population');
@@ -32,9 +24,23 @@ function GameOfLife(grid) {
     this.currBoard = [];
     this.keepWorking = false;
 
-    this.gameTable = $('#gameTable');
+    this.buildTable(self);
 
-    grid.forEach(function (row, yCoordinate) {
+    this.generationText.text(this.currGeneration);
+    this.population = this.getPopulation();
+}
+
+GameOfLife.prototype.buildTable = function (self) {
+
+    var table = document.getElementById("gameTable");
+
+    for (var row = 0; row < table.rows.length; row++) {
+        table.deleteRow(row);
+    }
+
+    this.gameTable = $("#gameTable");
+
+    this.grid.forEach(function (row, yCoordinate) {
         var tr = $('<tr>');
 
         self.currBoard.push(row.map(
@@ -56,9 +62,7 @@ function GameOfLife(grid) {
             }));
     });
 
-    this.generationText.text(this.currGeneration);
-    this.population = this.getPopulation();
-}
+};
 
 /**
  * Counts the living population at any given time.
@@ -116,7 +120,7 @@ GameOfLife.prototype.getNeighbors = function (x, y) {
 
     allNeighborPositions.forEach(
         function (currCoordinate) {
-            //Verification of possible neighbor cell's existence.
+
             if (localBoardState[currCoordinate.yCoordinate] && localBoardState[currCoordinate.yCoordinate][currCoordinate.xCoordinate]) {
 
                 verifiedNeighbors.push(localBoardState[currCoordinate.yCoordinate][currCoordinate.xCoordinate]);
@@ -160,11 +164,11 @@ GameOfLife.prototype.setCellNextStates = function () {
             }
 
             // LIVES ON!
-            else if ((aliveCount === this.populationThreshold) || (cell.isAlive && (aliveCount === this.goodPopulation))) {
+            else if ((aliveCount === this.populationThreshold) || (cell.item.getProofOfLife() && (aliveCount === this.goodPopulation))) {
                 cell.item.nextState = StatesOfLife.LIVES_ON;
 
                 //Resurrection by use of the dark arts.
-            } else if ((aliveCount === this.ressurectorPopulation) && (!cell.isAlive)) {
+            } else if ((aliveCount === this.ressurectorPopulation) && (!cell.item.getProofOfLife())) {
                 cell.item.nextState = StatesOfLife.RESURRECTED;
             }
 
@@ -178,8 +182,8 @@ GameOfLife.prototype.setCellNextStates = function () {
  * Updates one generation
  */
 GameOfLife.prototype.updateGeneration = function () {
-    var self = this;
 
+    var self = this;
     this.keepWorking = false;
 
     this.currBoard.forEach(function (row) {
@@ -196,10 +200,42 @@ GameOfLife.prototype.updateGeneration = function () {
 
     this.generationText.text(this.currGeneration);
     this.currGeneration++;
+
+    //this.buildTable(self);
+
+    this.updateTable();
     this.getPopulation();
+    /*
+    Instead of rebuilding the whole table compare to see if it is already chosen.
+     */
 
-    setInterval(self.setCellNextStates, 500);
+    setInterval(self.setCellNextStates, 10000);
 
+};
+
+/**
+ * FOR SOME REASON WHEN I SINGLE CLICK IT"S NOT UPDATING THE GRID
+ */
+GameOfLife.prototype.updateTable = function () {
+
+    var localBoard = this.currBoard;
+
+    localBoard.forEach(function (row, yCoord) {
+        row.forEach(function (cell, xCoord) {
+
+            var tdID = "x";
+            tdID = tdID.concat(xCoord);
+            tdID = tdID.concat("y");
+            tdID = tdID.concat(yCoord);
+
+            if (cell.item.getProofOfLife()) {
+                document.getElementById(tdID).className = "alive";
+            } else {
+                document.getElementById(tdID).classList.remove('alive');
+            }
+
+        });
+    });
 };
 
 /**
@@ -216,9 +252,7 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
     var yCoordinate = parseInt(coordinates.pop());
     var xCoordinate = parseInt(coordinates.pop());
 
-    var localBoard = this.currBoard;
-
-    localBoard.forEach(function (row, yIndex) {
+    this.currBoard.forEach(function (row, yIndex) {
 
         row.forEach(function (cell, xIndex) {
 
@@ -247,4 +281,30 @@ GameOfLife.prototype.startGame = function () {
  */
 GameOfLife.prototype.stopGame = function () {
     this.keepWorking = false;
+};
+
+GameOfLife.prototype.addRowToGrid = function () {
+    var size = this.grid[0].length;
+    var row = [];
+    for (var i = 0; i < size; i++) {
+        row.push(0);
+    }
+    this.grid.push(row);
+};
+
+GameOfLife.prototype.addColToGrid = function () {
+    for (var i = 0; i < this.grid.length; i++) {
+        this.grid[i].push(0);
+    }
+};
+
+GameOfLife.prototype.removeRow = function () {
+    this.grid.pop();
+};
+
+GameOfLife.prototype.removeColumn = function () {
+
+    for (var row = 0; row < this.grid.length; row++) {
+        this.grid[row].pop();
+    }
 };

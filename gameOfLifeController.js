@@ -4,65 +4,59 @@ function GameOfLifeController() {
 }
 
 GameOfLifeController.prototype.startTheGame = function () {
-    var self = this;
-    self.gameOfLife.startGame();
+
+    this.gameOfLife.startGame();
 };
 
 GameOfLifeController.prototype.stopTheGame = function () {
-    var self = this;
 
-    self.gameOfLife.stopGame();
+
+    this.gameOfLife.stopGame();
 };
 
 GameOfLifeController.prototype.updateOneGeneration = function () {
-    var self = this;
 
-    self.gameOfLife.updateGeneration();
+    this.gameOfLife.updateGeneration();
 };
 
 GameOfLifeController.prototype.updateXGenerations = function (numberOfGenerations) {
-    var self = this;
+
 
     for (var currGen = 0; currGen < numberOfGenerations; currGen++) {
-        self.gameOfLife.updateGeneration();
+        this.gameOfLife.updateGeneration();
     }
 };
 
 GameOfLifeController.prototype.buildNewTable = function (rows, cols, random) {
-    var self = this;
 
-    self.grid = this.buildGrid(rows, cols, random);
-    self.gameOfLife = new GameOfLife(grid);
+    this.grid = this.buildGrid(rows, cols, random);
+    console.log(this.grid);
+    this.gameOfLife = new GameOfLife(this.grid);
 };
 
 GameOfLifeController.prototype.updateASingleCell = function (id, state) {
-    var self = this;
 
-    self.gameOfLife.updateSingleCell(id, state);
+    this.gameOfLife.updateSingleCell(id, state);
 };
 
 GameOfLifeController.prototype.addRowToTheGrid = function () {
-    var self = this;
 
-    self.gameOfLife.addRowToGrid();
+    this.gameOfLife.addRowToGrid();
 };
 
 GameOfLifeController.prototype.addColumnToTheGrid = function () {
-    var self = this;
 
-    self.gameOfLife.addColToGrid();
+    this.gameOfLife.addColToGrid();
 };
 
 GameOfLifeController.prototype.removeRowFromGrid = function () {
-    var self = this;
 
-    self.gameOfLife.removeRow();
+    this.gameOfLife.removeRow();
 };
 
 GameOfLifeController.prototype.removeColumnFromGrid = function () {
-    var self = this;
 
-    self.gameOfLife.removeColumn();
+    this.gameOfLife.removeColumn();
 };
 
 GameOfLifeController.prototype.buildGrid = function (rowSize, colSize, random) {

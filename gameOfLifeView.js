@@ -1,6 +1,5 @@
 function GameOfLifeView() {
     this.controller = new GameOfLifeController();
-    console.log(this.controller);
 }
 
 /**
@@ -31,9 +30,6 @@ GameOfLifeView.prototype.stopGame = function () {
  */
 GameOfLifeView.prototype.incrementOneGeneration = function () {
     var self = this;
-
-    console.log(self);
-    console.log(self.controller);
     self.controller.updateOneGeneration();
 };
 

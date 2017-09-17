@@ -1,3 +1,9 @@
+/**
+ * View class that acts on the front end of the application.
+ * @author Daniel Burkhart.
+ *
+ * @constructor
+ */
 function GameOfLifeView() {
     this.controller = new GameOfLifeController();
 }
@@ -137,23 +143,8 @@ GameOfLifeView.prototype.deleteLastColumn = function () {
 };
 
 /**
- * Deletes all rows and columns from table except for origin point.
+ * Makes the single cells "clickable" for the user and then updates the grid on the backend.
  */
-GameOfLifeView.prototype.resetToOrigin = function () {
-
-    var table = document.getElementById('gameTable');
-
-    for (var lastRow = table.rows.length - 1; lastRow > 0; lastRow--) {
-        table.deleteRow(lastRow);
-    }
-
-    for (var currRow = 0; currRow < table.rows.length; currRow++) {
-        for (var currCol = table.rows[0].cells.length - 1; currCol > 0; currCol--) {
-            table.rows[currRow].deleteCell(currCol);
-        }
-    }
-};
-
 GameOfLifeView.prototype.makeCellsClickable = function () {
     var self = this;
 

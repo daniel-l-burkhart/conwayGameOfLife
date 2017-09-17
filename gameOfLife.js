@@ -1,9 +1,11 @@
 /**
  * Game of life "Class" that handles the "back end" work of the game.
+ * @author Daniel Burkhart.
+ *
  * @param grid
- * The grid that ties to the table
+ *      The grid that ties to the table
  * @constructor
- * Requires the grid to be built.
+ *      Requires the grid to be built.
  */
 function GameOfLife(grid) {
 
@@ -30,6 +32,11 @@ function GameOfLife(grid) {
     this.population = this.getPopulation();
 }
 
+/**
+ * Builds the table dynamically based on the grid.
+ * @param self
+ *      The self parameter.
+ */
 GameOfLife.prototype.buildTable = function (self) {
 
     var table = document.getElementById("gameTable");
@@ -85,11 +92,11 @@ GameOfLife.prototype.getPopulation = function () {
 /**
  * Gets a single cell's neighbors to see if they're dead or not.
  * @param x
- * The X Coordinate of the cell
+ *      The X Coordinate of the cell
  * @param y
- * The Y Coordinate of the cell
+ *      The Y Coordinate of the cell
  * @returns {Array}
- * An array of any cell's neighbors.
+ *      An array of any cell's neighbors.
  */
 GameOfLife.prototype.getNeighbors = function (x, y) {
 
@@ -137,11 +144,13 @@ GameOfLife.prototype.getNeighbors = function (x, y) {
  */
 GameOfLife.prototype.setCellNextStates = function () {
 
+    console.log("Got to set next cell states");
     if (!this.keepWorking) {
         return;
     }
 
     var self = this;
+
     var localBoard = this.currBoard;
 
     localBoard.forEach(function (row, yCoord) {
@@ -155,20 +164,24 @@ GameOfLife.prototype.setCellNextStates = function () {
             });
 
             //Underpopulation
-            if (aliveCount < this.populationThreshold) {
+            if (aliveCount < self.populationThreshold) {
+                console.log("Starvation: " + xCoord + " " + yCoord);
                 cell.item.nextState = StatesOfLife.DEAD;
 
                 //Overcrowding
-            } else if (aliveCount >= this.overCrowdingThreshold) {
+            } else if (aliveCount >= self.overCrowdingThreshold) {
+                console.log("Overcrowding: " + xCoord + " " + yCoord);
                 cell.item.nextState = StatesOfLife.DEAD;
             }
 
             // LIVES ON!
-            else if ((aliveCount === this.populationThreshold) || (cell.item.getProofOfLife() && (aliveCount === this.goodPopulation))) {
+            else if ((aliveCount === self.populationThreshold) || (cell.item.getProofOfLife() && (aliveCount === this.goodPopulation))) {
+                console.log("Lives On: " + xCoord + " " + yCoord);
                 cell.item.nextState = StatesOfLife.LIVES_ON;
 
                 //Resurrection by use of the dark arts.
-            } else if ((aliveCount === this.ressurectorPopulation) && (!cell.item.getProofOfLife())) {
+            } else if ((aliveCount === self.ressurectorPopulation) && (!cell.item.getProofOfLife())) {
+                console.log("Resurrection: " + xCoord + " " + yCoord);
                 cell.item.nextState = StatesOfLife.RESURRECTED;
             }
 
@@ -178,10 +191,18 @@ GameOfLife.prototype.setCellNextStates = function () {
     this.updateGeneration();
 };
 
+GameOfLife.prototype.setCellNextStatesForSingleGeneration = function () {
+    this.keepWorking = true;
+    this.setCellNextStates();
+    this.keepWorking = false;
+};
+
 /**
  * Updates one generation
  */
 GameOfLife.prototype.updateGeneration = function () {
+
+    console.log("Got to the update generation!");
 
     var self = this;
     this.keepWorking = false;
@@ -201,26 +222,19 @@ GameOfLife.prototype.updateGeneration = function () {
     this.generationText.text(this.currGeneration);
     this.currGeneration++;
 
-    //this.buildTable(self);
-
     this.updateTable();
     this.getPopulation();
-    /*
-    Instead of rebuilding the whole table compare to see if it is already chosen.
-     */
-
-    setInterval(self.setCellNextStates, 10000);
 
 };
 
 /**
- * FOR SOME REASON WHEN I SINGLE CLICK IT"S NOT UPDATING THE GRID
+ * Update Table.
  */
 GameOfLife.prototype.updateTable = function () {
 
-    var localBoard = this.currBoard;
+    console.log("Got to update table!");
 
-    localBoard.forEach(function (row, yCoord) {
+    this.currBoard.forEach(function (row, yCoord) {
         row.forEach(function (cell, xCoord) {
 
             var tdID = "x";
@@ -229,6 +243,7 @@ GameOfLife.prototype.updateTable = function () {
             tdID = tdID.concat(yCoord);
 
             if (cell.item.getProofOfLife()) {
+                console.log(tdID);
                 document.getElementById(tdID).className = "alive";
             } else {
                 document.getElementById(tdID).classList.remove('alive');
@@ -241,9 +256,9 @@ GameOfLife.prototype.updateTable = function () {
 /**
  * Updates a single cell after a click
  * @param id
- * The ID of the cell i.e. x10y10
+ *      The ID of the cell i.e. x10y10
  * @param value
- * The new value for the cell, 1 = alive, 0 = dead.
+ *      The new value for the cell, 1 = alive, 0 = dead.
  */
 GameOfLife.prototype.updateSingleCell = function (id, value) {
 
@@ -252,17 +267,19 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
     var yCoordinate = parseInt(coordinates.pop());
     var xCoordinate = parseInt(coordinates.pop());
 
-    this.currBoard.forEach(function (row, yIndex) {
+    var localBoard = this.currBoard;
+
+    localBoard.forEach(function (row, yIndex) {
 
         row.forEach(function (cell, xIndex) {
 
             if (yIndex === yCoordinate && xIndex === xCoordinate) {
                 cell.item.setMortality(value);
             }
-
         });
     });
 
+    this.currBoard = localBoard;
     this.getPopulation();
 
 };
@@ -271,9 +288,14 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
  * Starts the game
  */
 GameOfLife.prototype.startGame = function () {
-
+    console.log("Got to the model!");
     this.keepWorking = true;
-    this.updateGeneration();
+
+    var t = this;
+    setInterval(function () {
+        t.setCellNextStates();
+    }, 10000);
+
 };
 
 /**
@@ -283,6 +305,9 @@ GameOfLife.prototype.stopGame = function () {
     this.keepWorking = false;
 };
 
+/**
+ * Adds a row to the grid so that the model matches the view.
+ */
 GameOfLife.prototype.addRowToGrid = function () {
     var size = this.grid[0].length;
     var row = [];
@@ -292,16 +317,25 @@ GameOfLife.prototype.addRowToGrid = function () {
     this.grid.push(row);
 };
 
+/**
+ * Adds a column to the grid so that the model matches the view.
+ */
 GameOfLife.prototype.addColToGrid = function () {
     for (var i = 0; i < this.grid.length; i++) {
         this.grid[i].push(0);
     }
 };
 
+/**
+ * Removes a row from the grid so that the model matches the view.
+ */
 GameOfLife.prototype.removeRow = function () {
     this.grid.pop();
 };
 
+/**
+ * Removes a column from the grid so that the model matches the view.
+ */
 GameOfLife.prototype.removeColumn = function () {
 
     for (var row = 0; row < this.grid.length; row++) {

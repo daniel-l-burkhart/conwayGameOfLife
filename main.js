@@ -1,3 +1,6 @@
+/**
+ * "Main" method to start up everything.
+ */
 $(function () {
     var view = new GameOfLifeView();
     view.startUp();
@@ -5,6 +8,11 @@ $(function () {
     setUpButtonEvents(view);
 });
 
+/**
+ * Sets up binding of view "class" and the button elements in HTML.
+ * @param view
+ *      The view instance that ties these events to the view.
+ */
 function setUpButtonEvents(view) {
 
     var startButton = document.getElementById('startButton');

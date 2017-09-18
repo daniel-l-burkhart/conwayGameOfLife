@@ -4,7 +4,5 @@
  */
 var StatesOfLife = {
     DEAD: 0,
-    ALIVE: 1,
-    RESURRECTED: 1,
-    LIVES_ON: 1
+    ALIVE: 1
 };

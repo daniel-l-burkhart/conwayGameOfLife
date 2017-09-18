@@ -109,7 +109,6 @@ GameOfLifeView.prototype.addColumn = function () {
 
         var td = table.rows[currRow].insertCell(table.rows[currRow].cells.length);
         td.id = "x" + (table.rows[currRow].cells.length - 1) + "y" + currRow;
-        console.log(td.id);
     }
     this.makeCellsClickable();
     self.controller.addColumnToTheGrid();

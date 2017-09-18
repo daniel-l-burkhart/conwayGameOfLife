@@ -12,6 +12,7 @@ function GameOfLife(grid) {
     var self = this;
 
     this.currGeneration = 0;
+    this.population = 0;
 
     this.grid = grid;
 
@@ -19,8 +20,6 @@ function GameOfLife(grid) {
     this.populationText = $('#population');
 
     this.populationThreshold = 2;
-    this.goodPopulation = 3;
-    this.ressurectorPopulation = 3;
     this.overCrowdingThreshold = 4;
 
     this.currBoard = [];
@@ -29,7 +28,7 @@ function GameOfLife(grid) {
     this.buildTable(self);
 
     this.generationText.text(this.currGeneration);
-    this.population = this.getPopulation();
+    this.getPopulation();
 }
 
 /**
@@ -41,7 +40,7 @@ GameOfLife.prototype.startGame = function () {
     var self = this;
     setInterval(function () {
         self.setCellNextStates();
-    }, 10000);
+    }, 1000);
 
 };
 
@@ -60,9 +59,10 @@ GameOfLife.prototype.stopGame = function () {
 GameOfLife.prototype.buildTable = function (self) {
 
     var table = document.getElementById("gameTable");
-
-    for (var row = 0; row < table.rows.length; row++) {
-        table.deleteRow(row);
+    if (table.rows > 0) {
+        for (var row = 0; row < table.rows.length; row++) {
+            table.deleteRow(row);
+        }
     }
 
     this.gameTable = $("#gameTable");
@@ -104,8 +104,18 @@ GameOfLife.prototype.getPopulation = function () {
         });
     });
 
-    this.population = aliveCount;
-    this.populationText.text(this.population);
+    this.updatePopulation(aliveCount);
+};
+
+/**
+ * Updates the population when a single cell is clicked on
+ * @param newPopulation
+ *      The new population of the game.
+ */
+GameOfLife.prototype.updatePopulation = function (newPopulation) {
+    var self = this;
+    this.population = newPopulation;
+    this.populationText.text(self.population);
 };
 
 /**
@@ -122,7 +132,6 @@ GameOfLife.prototype.setCellNextStatesForSingleGeneration = function () {
  */
 GameOfLife.prototype.setCellNextStates = function () {
 
-    console.log("Got to set next cell states");
     if (!this.keepWorking) {
         return;
     }
@@ -140,22 +149,10 @@ GameOfLife.prototype.setCellNextStates = function () {
                 aliveCount += cell.item.getProofOfLife();
             });
 
-            //Underpopulation
-            if (aliveCount < self.populationThreshold) {
+            if (aliveCount < self.populationThreshold || aliveCount >= self.overCrowdingThreshold) {
                 cell.item.nextState = StatesOfLife.DEAD;
-
-                //Overcrowding
-            } else if (aliveCount >= self.overCrowdingThreshold) {
-                cell.item.nextState = StatesOfLife.DEAD;
-            }
-
-            // LIVES ON!
-            else if ((aliveCount === self.populationThreshold) || (cell.item.getProofOfLife() && (aliveCount === this.goodPopulation))) {
-                cell.item.nextState = StatesOfLife.LIVES_ON;
-
-                //Resurrection by use of the dark arts.
-            } else if ((aliveCount === self.ressurectorPopulation) && (!cell.item.getProofOfLife())) {
-                cell.item.nextState = StatesOfLife.RESURRECTED;
+            } else {
+                cell.item.nextState = StatesOfLife.ALIVE;
             }
 
         });
@@ -219,12 +216,18 @@ GameOfLife.prototype.updateGeneration = function () {
     var self = this;
     this.keepWorking = false;
 
-    this.currBoard.forEach(function (row) {
+    var localBoard = this.currBoard;
+    var newPopulation = 0;
+
+    localBoard.forEach(function (row) {
 
         row.forEach(function (cell) {
 
             if (cell.item.nextState !== cell.item.getProofOfLife() || !self.currGeneration) {
                 self.keepWorking = true;
+            }
+            if (cell.item.nextState === StatesOfLife.ALIVE) {
+                newPopulation++;
             }
             cell.item.setMortality(cell.item.nextState);
         });
@@ -233,29 +236,7 @@ GameOfLife.prototype.updateGeneration = function () {
     this.generationText.text(this.currGeneration);
     this.currGeneration++;
 
-    this.updateTable();
-    this.getPopulation();
-};
-
-/**
- * Update Table.
- */
-GameOfLife.prototype.updateTable = function () {
-
-    this.currBoard.forEach(function (row, yCoordinate) {
-        row.forEach(function (cell, xCoordinate) {
-
-            var tdID = "x" + xCoordinate + "y" + yCoordinate;
-            console.log(tdID);
-
-            if (cell.item.getProofOfLife()) {
-                document.getElementById(tdID).className = "alive";
-            } else {
-                document.getElementById(tdID).classList.remove('alive');
-            }
-
-        });
-    });
+    this.updatePopulation(newPopulation);
 };
 
 /**
@@ -284,9 +265,11 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
         });
     });
 
-    this.currBoard = localBoard;
-    this.getPopulation();
-
+    if (value === StatesOfLife.ALIVE) {
+        this.updatePopulation(this.population + 1);
+    } else if (value === StatesOfLife.DEAD) {
+        this.updatePopulation(this.population - 1);
+    }
 };
 
 /**

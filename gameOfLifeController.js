@@ -13,7 +13,6 @@ function GameOfLifeController() {
  * Starts the game
  */
 GameOfLifeController.prototype.startTheGame = function () {
-    console.log("Got to the controller start");
     this.gameOfLife.startGame();
 };
 
@@ -28,7 +27,6 @@ GameOfLifeController.prototype.stopTheGame = function () {
  * Progresses the game one generation.
  */
 GameOfLifeController.prototype.updateOneGeneration = function () {
-
     this.gameOfLife.setCellNextStatesForSingleGeneration();
 };
 
@@ -39,7 +37,6 @@ GameOfLifeController.prototype.updateOneGeneration = function () {
  *      The number of generations the game is progressed.
  */
 GameOfLifeController.prototype.updateXGenerations = function (numberOfGenerations) {
-
     for (var currGen = 0; currGen < numberOfGenerations; currGen++) {
         this.gameOfLife.setCellNextStatesForSingleGeneration();
     }
@@ -55,9 +52,7 @@ GameOfLifeController.prototype.updateXGenerations = function (numberOfGeneration
  *      Bool parameter for if the population should be randomized or not.
  */
 GameOfLifeController.prototype.buildNewTable = function (rows, cols, random) {
-
     this.grid = this.buildGrid(rows, cols, random);
-    console.log(this.grid);
     this.gameOfLife = new GameOfLife(this.grid);
 };
 
@@ -69,7 +64,6 @@ GameOfLifeController.prototype.buildNewTable = function (rows, cols, random) {
  *      The new state of the cell, ALIVE or DEAD!
  */
 GameOfLifeController.prototype.updateASingleCell = function (id, state) {
-
     this.gameOfLife.updateSingleCell(id, state);
 };
 

@@ -5,9 +5,25 @@
  * @constructor
  */
 function GameOfLifeController() {
-    this.grid = this.buildGrid(10, 10, true);
-    this.gameOfLife = new GameOfLife(this.grid);
+    this.grid = [];
+    this.gameOfLife = '';
+    this.makeTableAndGrid(10, 10, true);
 }
+
+/**
+ * Creates the table on the view and then creates the grid for the model.
+ * @param rows
+ * The number of rows
+ * @param cols
+ * The number of cols.
+ * @param random
+ * If this is a random population or not.
+ */
+GameOfLifeController.prototype.makeTableAndGrid = function (rows, cols, random) {
+    this.grid = this.buildGrid(rows, cols, random);
+    this.gameOfLife = new GameOfLife(this.grid);
+    this.gameOfLife.newCurrBoard(this.buildTable(this.grid));
+};
 
 /**
  * Starts the game
@@ -52,8 +68,8 @@ GameOfLifeController.prototype.updateXGenerations = function (numberOfGeneration
  *      Bool parameter for if the population should be randomized or not.
  */
 GameOfLifeController.prototype.buildNewTable = function (rows, cols, random) {
-    this.grid = this.buildGrid(rows, cols, random);
-    this.gameOfLife = new GameOfLife(this.grid);
+    console.log("From buildNewTable");
+    this.makeTableAndGrid(rows, cols, random);
 };
 
 /**
@@ -128,3 +144,43 @@ GameOfLifeController.prototype.buildGrid = function (rowSize, colSize, random) {
     }
     return grid;
 };
+
+/**
+ * Dynamically builds the table for the view so that it matches the grid.
+ * Also creates cell objects.
+ * @param grid
+ * @returns {Array}
+ */
+GameOfLifeController.prototype.buildTable = function (grid) {
+
+    var gameTable = $("#gameTable");
+
+    var currBoard = [];
+
+    grid.forEach(function (row, yCoordinate) {
+        var tr = $('<tr>');
+
+        currBoard.push(row.map(
+            function (item, xCoordinate) {
+
+                var td = $('<td>');
+                var tdId = 'x' + xCoordinate + 'y' + yCoordinate;
+
+                td.attr('id', tdId);
+                tr.append(td);
+
+                gameTable.append(tr);
+
+                return {
+                    x: xCoordinate,
+                    y: yCoordinate,
+                    item: new Cell(item, td)
+                };
+            }));
+    });
+
+    console.log(gameTable);
+
+    return currBoard;
+};
+

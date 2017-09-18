@@ -67,11 +67,14 @@ GameOfLifeView.prototype.resetTheGame = function () {
  */
 GameOfLifeView.prototype.randomPopulation = function () {
     var self = this;
+    var gameTable = $("#gameTable");
 
     var rows = document.getElementById('gameTable').rows.length;
-    var cols = document.getElementById('gameTable').rows[0].length;
+    var cells = gameTable.find("tr:first td").length;
 
-    self.controller.buildNewTable(rows, cols, true);
+    gameTable.find("tr").remove();
+
+    self.controller.buildNewTable(rows, cells, true);
 
     this.makeCellsClickable();
 };

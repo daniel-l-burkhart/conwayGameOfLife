@@ -9,8 +9,6 @@
  */
 function GameOfLife(grid) {
 
-    var self = this;
-
     this.currGeneration = 0;
     this.population = 0;
 
@@ -25,17 +23,22 @@ function GameOfLife(grid) {
     this.currBoard = [];
     this.keepWorking = false;
 
-    this.buildTable(self);
-
     this.generationText.text(this.currGeneration);
-    this.getPopulation();
 }
+
+GameOfLife.prototype.newCurrBoard = function (board) {
+    console.log("Called newCurrBoard");
+    this.currBoard = board;
+    this.getPopulation();
+};
 
 /**
  * Starts the game
  */
 GameOfLife.prototype.startGame = function () {
     this.keepWorking = true;
+    this.currGeneration = 1;
+    this.generationText.text(this.currGeneration);
 
     var self = this;
     setInterval(function () {
@@ -49,46 +52,6 @@ GameOfLife.prototype.startGame = function () {
  */
 GameOfLife.prototype.stopGame = function () {
     this.keepWorking = false;
-};
-
-/**
- * Builds the table dynamically based on the grid.
- * @param self
- *      The self parameter.
- */
-GameOfLife.prototype.buildTable = function (self) {
-
-    var table = document.getElementById("gameTable");
-    if (table.rows > 0) {
-        for (var row = 0; row < table.rows.length; row++) {
-            table.deleteRow(row);
-        }
-    }
-
-    this.gameTable = $("#gameTable");
-
-    this.grid.forEach(function (row, yCoordinate) {
-        var tr = $('<tr>');
-
-        self.currBoard.push(row.map(
-            function (item, xCoordinate) {
-
-                var td = $('<td>');
-                var tdId = 'x' + xCoordinate + 'y' + yCoordinate;
-
-                td.attr('id', tdId);
-                tr.append(td);
-
-                self.gameTable.append(tr);
-
-                return {
-                    x: xCoordinate,
-                    y: yCoordinate,
-                    item: new Cell(item, td)
-                };
-            }));
-    });
-
 };
 
 /**
@@ -139,10 +102,10 @@ GameOfLife.prototype.setCellNextStates = function () {
     var self = this;
     var localBoard = this.currBoard;
 
-    localBoard.forEach(function (row, yCoord) {
-        row.forEach(function (cell, xCoord) {
+    localBoard.forEach(function (row, yCoordinate) {
+        row.forEach(function (cell, xCoordinate) {
 
-            var neighbors = self.getNeighbors(xCoord, yCoord);
+            var neighbors = self.getNeighbors(xCoordinate, yCoordinate);
             var aliveCount = 0;
 
             neighbors.forEach(function (cell) {

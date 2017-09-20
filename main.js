@@ -14,17 +14,20 @@ $(function () {
  *      The view instance that ties these events to the view.
  */
 function setUpButtonEvents(view) {
-
+    //Game Buttons
     var startButton = document.getElementById('startButton');
     var stopButton = document.getElementById('stopButton');
     var incrementOne = document.getElementById('incrementOne');
     var increment23 = document.getElementById('increment23');
     var resetGame = document.getElementById('resetGame');
     var randomPopulation = document.getElementById('randomPopulation');
+
+    //Table Buttons
     var addRow = document.getElementById('addRow');
     var addCol = document.getElementById('addCol');
     var deleteRow = document.getElementById('deleteRow');
     var deleteCol = document.getElementById('deleteCol');
+    var buildNewVariableTable = document.getElementById('buildNewVariableTable');
 
     startButton.addEventListener('click', function () {
         view.startGame();
@@ -53,14 +56,28 @@ function setUpButtonEvents(view) {
     addRow.addEventListener('click', function () {
         view.addRow();
     });
+
     addCol.addEventListener('click', function () {
         view.addColumn();
     });
+
     deleteRow.addEventListener('click', function () {
         view.deleteLastRow();
     });
+
     deleteCol.addEventListener('click', function () {
         view.deleteLastColumn();
+    });
+
+    buildNewVariableTable.addEventListener('click', function () {
+        var rows = document.getElementById('rowsInput').value;
+        var columns = document.getElementById('colsInput').value;
+
+        if (rows === null || rows === "" || columns === null || columns === "") {
+            alert("Both columns and rows must be filled.");
+        } else {
+            view.buildVariableSizedTable(rows, columns);
+        }
     });
 }
 

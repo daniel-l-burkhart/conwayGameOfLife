@@ -87,7 +87,6 @@ GameOfLifeController.prototype.updateASingleCell = function (id, state) {
  * Adds a row to the backend when the user adds a row on the view.
  */
 GameOfLifeController.prototype.addRowToTheGrid = function () {
-
     this.gameOfLife.addRowToGrid();
 };
 
@@ -95,7 +94,6 @@ GameOfLifeController.prototype.addRowToTheGrid = function () {
  * Adds a column to the backend when the user adds a col to the view.
  */
 GameOfLifeController.prototype.addColumnToTheGrid = function () {
-
     this.gameOfLife.addColToGrid();
 };
 
@@ -103,7 +101,6 @@ GameOfLifeController.prototype.addColumnToTheGrid = function () {
  * Removes a row to the backend when the user removes a row on the view.
  */
 GameOfLifeController.prototype.removeRowFromGrid = function () {
-
     this.gameOfLife.removeRow();
 };
 
@@ -111,7 +108,6 @@ GameOfLifeController.prototype.removeRowFromGrid = function () {
  * Removes a column to the backend when the user removes a col to the view.
  */
 GameOfLifeController.prototype.removeColumnFromGrid = function () {
-
     this.gameOfLife.removeColumn();
 };
 
@@ -178,8 +174,6 @@ GameOfLifeController.prototype.buildTable = function (grid) {
                 };
             }));
     });
-
-    console.log(gameTable);
 
     return currBoard;
 };

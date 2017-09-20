@@ -52,11 +52,11 @@ GameOfLifeView.prototype.incrementTwentyThreeGenerations = function () {
  */
 GameOfLifeView.prototype.resetTheGame = function () {
     var self = this;
-
+    var gameTable = $("#gameTable");
     var rows = document.getElementById('gameTable').rows.length;
     var cols = document.getElementById('gameTable').rows[0].cells.length;
 
-    $("#gameTable").find("tr").remove();
+    gameTable.find("tr").remove();
 
     self.controller.buildNewTable(rows, cols, false);
     this.makeCellsClickable();
@@ -68,14 +68,29 @@ GameOfLifeView.prototype.resetTheGame = function () {
 GameOfLifeView.prototype.randomPopulation = function () {
     var self = this;
     var gameTable = $("#gameTable");
-
     var rows = document.getElementById('gameTable').rows.length;
     var cells = gameTable.find("tr:first td").length;
 
     gameTable.find("tr").remove();
 
     self.controller.buildNewTable(rows, cells, true);
+    this.makeCellsClickable();
+};
 
+/**
+ * Builds new table based on text input.
+ * @param rows
+ *      The number of rows.
+ * @param cols
+ *      The number of columns.
+ */
+GameOfLifeView.prototype.buildVariableSizedTable = function (rows, cols) {
+    var self = this;
+
+    var gameTable = $("#gameTable");
+    gameTable.find("tr").remove();
+
+    self.controller.buildNewTable(rows, cols, false);
     this.makeCellsClickable();
 };
 
@@ -94,7 +109,6 @@ GameOfLifeView.prototype.addRow = function () {
         var rowNum = table.rows.length - 1;
         td.id = "x" + col + "y" + rowNum;
     }
-
     this.makeCellsClickable();
 
     self.controller.addRowToTheGrid();
@@ -122,11 +136,9 @@ GameOfLifeView.prototype.addColumn = function () {
  */
 GameOfLifeView.prototype.deleteLastRow = function () {
     var self = this;
-
     var table = document.getElementById('gameTable');
 
     table.deleteRow(table.rows.length - 1);
-
     self.controller.removeRowFromGrid();
 };
 
@@ -135,7 +147,6 @@ GameOfLifeView.prototype.deleteLastRow = function () {
  */
 GameOfLifeView.prototype.deleteLastColumn = function () {
     var self = this;
-
     var table = document.getElementById('gameTable');
 
     for (var currRow = 0; currRow < table.rows.length; currRow++) {

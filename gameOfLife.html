@@ -30,10 +30,11 @@
 </head>
 <body>
 
-<h1>Conway's Game Of Life</h1>
+<h1 class="text-center">Conway's Game Of Life</h1>
 
 <hr>
 <div class="col-lg-9">
+
     <h4>Generation: <span id="generation"> </span></h4>
     <h4>Population: <span id="population"> </span></h4>
 
@@ -48,7 +49,7 @@
 
     <div class="jumbotron">
 
-        <h4> GAME BUTTONS</h4>
+        <h4> Game Buttons</h4>
 
         <div class="btn-group">
             <button id="startButton" class="btn btn-success">START GAME</button>
@@ -74,7 +75,18 @@
 
         <h4>Table Buttons</h4>
 
+        <div>
+            <label for="rowsInput">Rows:</label>
+            <input type="number" class="form-control" id="rowsInput">
+            <label for="colsInput">Columns:</label>
+            <input type="number" class="form-control" id="colsInput">
+
+            <button id="buildNewVariableTable" class="btn btn-default">Build New Table</button>
+        </div>
+
+        <hr>
         <div class="btn-group">
+
             <button id="addRow" class="btn btn-primary" name="appendRow">Add Row</button>
             <button id="addCol" class="btn btn-primary" name="appendRow">Add Column</button>
         </div>

@@ -16,6 +16,7 @@ function GameOfLife(grid) {
 
     this.generationText = $('#generation');
     this.populationText = $('#population');
+    this.generationText.text(this.currGeneration);
 
     this.populationThreshold = 2;
     this.overCrowdingThreshold = 4;
@@ -23,9 +24,13 @@ function GameOfLife(grid) {
     this.currBoard = [];
     this.keepWorking = false;
 
-    this.generationText.text(this.currGeneration);
 }
 
+/**
+ * Makes the currBoard build from the controller, and sets it to the model.
+ * @param board
+ *      The 2D array that is a game board.
+ */
 GameOfLife.prototype.newCurrBoard = function (board) {
     console.log("Called newCurrBoard");
     this.currBoard = board;
@@ -173,7 +178,7 @@ GameOfLife.prototype.getNeighbors = function (x, y) {
 };
 
 /**
- * Updates one generation
+ * Updates the game one generation
  */
 GameOfLife.prototype.updateGeneration = function () {
     var self = this;
@@ -183,7 +188,6 @@ GameOfLife.prototype.updateGeneration = function () {
     var newPopulation = 0;
 
     localBoard.forEach(function (row) {
-
         row.forEach(function (cell) {
 
             if (cell.item.nextState !== cell.item.getProofOfLife() || !self.currGeneration) {
@@ -212,14 +216,11 @@ GameOfLife.prototype.updateGeneration = function () {
 GameOfLife.prototype.updateSingleCell = function (id, value) {
 
     var coordinates = id.match(/\d+/g);
-
     var yCoordinate = parseInt(coordinates.pop());
     var xCoordinate = parseInt(coordinates.pop());
-
     var localBoard = this.currBoard;
 
     localBoard.forEach(function (row, yIndex) {
-
         row.forEach(function (cell, xIndex) {
 
             if (yIndex === yCoordinate && xIndex === xCoordinate) {
@@ -228,11 +229,9 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
         });
     });
 
-    if (value === StatesOfLife.ALIVE) {
-        this.updatePopulation(this.population + 1);
-    } else if (value === StatesOfLife.DEAD) {
-        this.updatePopulation(this.population - 1);
-    }
+    var newPopulation = this.population;
+    (value === StatesOfLife.ALIVE) ? newPopulation++ : newPopulation--;
+    this.updatePopulation(newPopulation);
 };
 
 /**

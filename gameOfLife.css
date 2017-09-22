@@ -1,5 +1,6 @@
-/*GAME OF LIFE CSS */
-
+/**
+* CSS File for the game.
+*/
 .gameTable {
     margin: 0 auto;
     table-layout: fixed;
@@ -8,8 +9,8 @@
 
 .gameTable td {
     padding: 0;
-    background: #fff !important;
-    border: 1px solid #ddd;
+    background: #ffffff !important;
+    border: 1px solid #dddddd;
 }
 
 .gameTable td:before {

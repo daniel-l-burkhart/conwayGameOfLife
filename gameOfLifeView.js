@@ -12,7 +12,6 @@ function GameOfLifeView() {
  * Starts up the view by making all of the cells click-able.
  */
 GameOfLifeView.prototype.startUp = function () {
-    this.makeCellsClickable();
 };
 
 /**
@@ -59,7 +58,6 @@ GameOfLifeView.prototype.resetTheGame = function () {
     gameTable.find("tr").remove();
 
     self.controller.buildNewTable(rows, cols, false);
-    this.makeCellsClickable();
 };
 
 /**
@@ -74,7 +72,6 @@ GameOfLifeView.prototype.randomPopulation = function () {
     gameTable.find("tr").remove();
 
     self.controller.buildNewTable(rows, cells, true);
-    this.makeCellsClickable();
 };
 
 /**
@@ -91,7 +88,6 @@ GameOfLifeView.prototype.buildVariableSizedTable = function (rows, cols) {
     gameTable.find("tr").remove();
 
     self.controller.buildNewTable(rows, cols, false);
-    this.makeCellsClickable();
 };
 
 /**
@@ -99,17 +95,6 @@ GameOfLifeView.prototype.buildVariableSizedTable = function (rows, cols) {
  */
 GameOfLifeView.prototype.addRow = function () {
     var self = this;
-
-    var table = document.getElementById('gameTable');
-    var row = table.insertRow(table.rows.length);
-
-    for (var col = 0; col < table.rows[0].cells.length; col++) {
-
-        var td = row.insertCell(col);
-        var rowNum = table.rows.length - 1;
-        td.id = "x" + col + "y" + rowNum;
-    }
-    this.makeCellsClickable();
 
     self.controller.addRowToTheGrid();
 };
@@ -120,14 +105,6 @@ GameOfLifeView.prototype.addRow = function () {
 GameOfLifeView.prototype.addColumn = function () {
     var self = this;
 
-    var table = document.getElementById('gameTable');
-
-    for (var currRow = 0; currRow < table.rows.length; currRow++) {
-
-        var td = table.rows[currRow].insertCell(table.rows[currRow].cells.length);
-        td.id = "x" + (table.rows[currRow].cells.length - 1) + "y" + currRow;
-    }
-    this.makeCellsClickable();
     self.controller.addColumnToTheGrid();
 };
 
@@ -153,25 +130,4 @@ GameOfLifeView.prototype.deleteLastColumn = function () {
         table.rows[currRow].deleteCell(table.rows[currRow].cells.length - 1);
     }
     self.controller.removeColumnFromGrid();
-};
-
-/**
- * Makes the single cells "clickable" for the user and then updates the grid on the backend.
- */
-GameOfLifeView.prototype.makeCellsClickable = function () {
-    var self = this;
-
-    $('td').click(function () {
-        var cellID = $(this).attr("id");
-
-        if ($(this).attr("class") === 'alive') {
-            self.controller.updateASingleCell(cellID, StatesOfLife.DEAD);
-            $(this).removeClass('alive');
-
-        } else {
-            self.controller.updateASingleCell(cellID, StatesOfLife.ALIVE);
-            $(this).addClass('alive');
-        }
-    });
-
 };

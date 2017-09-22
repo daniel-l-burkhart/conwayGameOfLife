@@ -1,9 +1,10 @@
 /**
  * Cell "Class" that contains its current liveliness and its next state.
+ *
  * @param initialState
- * The initial state: alive, dead, etc.
+ *      The initial state: alive, dead, etc.
  * @param tableCell
- * The cell in question
+ *      The reference to the table cell in the view.
  * @constructor
  */
 function Cell(initialState, tableCell) {
@@ -22,15 +23,16 @@ Cell.prototype.getProofOfLife = function () {
 
 /**
  * Sets the liveliness of cell
- * @param value
- * The value of liveliness: 0 for dead, 1 for alive.
+ *
+ * @param alive
+ *      The liveliness of the cell, 1 if alive, 0 otherwise
  */
-Cell.prototype.setMortality = function (value) {
-    this.isAlive = value;
+Cell.prototype.setMortality = function (alive) {
+    this.isAlive = alive;
 
-    if (value) {
-        this.tableCell.addClass('alive');
-    } else {
+    if (!alive) {
         this.tableCell.removeClass('alive');
+    } else {
+        this.tableCell.addClass('alive');
     }
 };

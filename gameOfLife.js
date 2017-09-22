@@ -2,37 +2,31 @@
  * Game of life "Class" that handles the "back end" work of the game.
  * @author Daniel Burkhart.
  *
- * @param grid
- *      The grid that ties to the table
- * @constructor
- *      Requires the grid to be built.
+ @constructor
  */
-function GameOfLife(grid) {
+function GameOfLife() {
 
     this.currGeneration = 0;
-    this.population = 0;
-
-    this.grid = grid;
-
-    this.generationText = $('#generation');
-    this.populationText = $('#population');
+    this.generationText = $('#generationCount');
     this.generationText.text(this.currGeneration);
+
+    this.population = 0;
+    this.populationText = $('#populationCount');
 
     this.populationThreshold = 2;
     this.overCrowdingThreshold = 4;
 
     this.currBoard = [];
     this.keepWorking = false;
-
 }
 
 /**
  * Makes the currBoard build from the controller, and sets it to the model.
+ *
  * @param board
  *      The 2D array that is a game board.
  */
-GameOfLife.prototype.newCurrBoard = function (board) {
-    console.log("Called newCurrBoard");
+GameOfLife.prototype.newGameBoard = function (board) {
     this.currBoard = board;
     this.getPopulation();
 };
@@ -68,7 +62,7 @@ GameOfLife.prototype.getPopulation = function () {
 
     localBoard.forEach(function (row) {
         row.forEach(function (cell) {
-            aliveCount += cell.item.getProofOfLife();
+            aliveCount += cell.cellObject.getProofOfLife();
         });
     });
 
@@ -107,20 +101,20 @@ GameOfLife.prototype.setCellNextStates = function () {
     var self = this;
     var localBoard = this.currBoard;
 
-    localBoard.forEach(function (row, yCoordinate) {
-        row.forEach(function (cell, xCoordinate) {
+    localBoard.forEach(function (currRow, yCoordinate) {
+        currRow.forEach(function (currCell, xCoordinate) {
 
             var neighbors = self.getNeighbors(xCoordinate, yCoordinate);
             var aliveCount = 0;
 
-            neighbors.forEach(function (cell) {
-                aliveCount += cell.item.getProofOfLife();
+            neighbors.forEach(function (currNeighbor) {
+                aliveCount += currNeighbor.cellObject.getProofOfLife();
             });
 
             if (aliveCount < self.populationThreshold || aliveCount >= self.overCrowdingThreshold) {
-                cell.item.nextState = StatesOfLife.DEAD;
+                currCell.cellObject.nextState = StatesOfLife.DEAD;
             } else {
-                cell.item.nextState = StatesOfLife.ALIVE;
+                currCell.cellObject.nextState = StatesOfLife.ALIVE;
             }
 
         });
@@ -141,40 +135,71 @@ GameOfLife.prototype.setCellNextStates = function () {
 GameOfLife.prototype.getNeighbors = function (x, y) {
 
     /*
-        "Private" method to get all possible neighbor locations for any given cell.
+    *    "Private" method to get the eight possible neighbor locations for any given cell.
+    *    @return {Array}
+    *           Returns an array containing all of the neighbor positions or any cell.
     */
     function getAllPossibleNeighbors() {
-        var top = {xCoordinate: x, yCoordinate: y + 1};
-        var left = {xCoordinate: x - 1, yCoordinate: y};
-        var bottom = {xCoordinate: x, yCoordinate: y - 1};
-        var right = {xCoordinate: x + 1, yCoordinate: y};
 
-        var bottomLeft = {xCoordinate: x - 1, yCoordinate: y - 1};
-        var topLeft = {xCoordinate: x - 1, yCoordinate: y + 1};
-        var bottomRight = {xCoordinate: x + 1, yCoordinate: y - 1};
-        var topRight = {xCoordinate: x + 1, yCoordinate: y + 1};
+        var top = {
+            xCoord: x,
+            yCoord: y + 1
+        };
+        var left = {
+            xCoord: x - 1,
+            yCoord: y
+        };
+        var bottom = {
+            xCoord: x,
+            yCoord: y - 1
+        };
+        var right = {
+            xCoord: x + 1,
+            yCoord: y
+        };
+
+        var bottomLeft = {
+            xCoord: x - 1,
+            yCoord: y - 1
+        };
+        var topLeft = {
+            xCoord: x - 1,
+            yCoord: y + 1
+        };
+        var bottomRight = {
+            xCoord: x + 1,
+            yCoord: y - 1
+        };
+        var topRight = {
+            xCoord: x + 1,
+            yCoord: y + 1
+        };
 
         return [
             top, left, bottom, right, bottomLeft, topLeft, bottomRight, topRight
         ];
     }
 
-    var verifiedNeighbors = [];
-    var localBoardState = this.currBoard;
+    var realNeighbors = [];
+    var localBoard = this.currBoard;
     var allNeighborPositions = getAllPossibleNeighbors();
 
-    allNeighborPositions.forEach(
-        function (currCoordinate) {
-
-            if (localBoardState[currCoordinate.yCoordinate] && localBoardState[currCoordinate.yCoordinate][currCoordinate.xCoordinate]) {
-
-                verifiedNeighbors.push(localBoardState[currCoordinate.yCoordinate][currCoordinate.xCoordinate]);
-            }
+    /*
+     * Verifies if neighbor exists in the 2D matrix.
+     * @param potentialNeighbor
+     *      The potential neighbor location in question
+     * @returns {Array}
+     *      Returns an array of the valid neighbors of the cell
+     */
+    function verifyIfNeighborExists(potentialNeighbor) {
+        if (localBoard[potentialNeighbor.yCoord] &&
+            localBoard[potentialNeighbor.yCoord][potentialNeighbor.xCoord]) {
+            realNeighbors.push(localBoard[potentialNeighbor.yCoord][potentialNeighbor.xCoord]);
         }
-    );
+    }
 
-    return verifiedNeighbors;
-
+    allNeighborPositions.forEach(verifyIfNeighborExists);
+    return realNeighbors;
 };
 
 /**
@@ -187,16 +212,16 @@ GameOfLife.prototype.updateGeneration = function () {
     var localBoard = this.currBoard;
     var newPopulation = 0;
 
-    localBoard.forEach(function (row) {
-        row.forEach(function (cell) {
+    localBoard.forEach(function (currRow) {
+        currRow.forEach(function (currCell) {
 
-            if (cell.item.nextState !== cell.item.getProofOfLife() || !self.currGeneration) {
+            if (currCell.cellObject.nextState !== currCell.cellObject.getProofOfLife() || !self.currGeneration) {
                 self.keepWorking = true;
             }
-            if (cell.item.nextState === StatesOfLife.ALIVE) {
+            if (currCell.cellObject.nextState === StatesOfLife.ALIVE) {
                 newPopulation++;
             }
-            cell.item.setMortality(cell.item.nextState);
+            currCell.cellObject.setMortality(currCell.cellObject.nextState);
         });
     });
 
@@ -224,49 +249,13 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
         row.forEach(function (cell, xIndex) {
 
             if (yIndex === yCoordinate && xIndex === xCoordinate) {
-                cell.item.setMortality(value);
+                cell.cellObject.setMortality(value);
             }
         });
     });
 
+    console.log("Got to update single cell");
     var newPopulation = this.population;
     (value === StatesOfLife.ALIVE) ? newPopulation++ : newPopulation--;
     this.updatePopulation(newPopulation);
-};
-
-/**
- * Adds a row to the grid so that the model matches the view.
- */
-GameOfLife.prototype.addRowToGrid = function () {
-    var size = this.grid[0].length;
-    var row = [];
-    for (var i = 0; i < size; i++) {
-        row.push(0);
-    }
-    this.grid.push(row);
-};
-
-/**
- * Adds a column to the grid so that the model matches the view.
- */
-GameOfLife.prototype.addColToGrid = function () {
-    for (var i = 0; i < this.grid.length; i++) {
-        this.grid[i].push(0);
-    }
-};
-
-/**
- * Removes a row from the grid so that the model matches the view.
- */
-GameOfLife.prototype.removeRow = function () {
-    this.grid.pop();
-};
-
-/**
- * Removes a column from the grid so that the model matches the view.
- */
-GameOfLife.prototype.removeColumn = function () {
-    for (var row = 0; row < this.grid.length; row++) {
-        this.grid[row].pop();
-    }
 };

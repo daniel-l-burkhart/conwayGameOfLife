@@ -22,7 +22,7 @@ function GameOfLifeController() {
 GameOfLifeController.prototype.makeTableAndGrid = function (rows, cols, random) {
     this.grid.buildGrid(rows, cols, random);
     this.board = this.buildGameBoard(this.grid.getLatestGrid());
-    this.gameOfLife.newGameBoard(this.grid.getLatestGrid());
+    this.gameOfLife.newGameBoard(this.board);
 };
 
 /**

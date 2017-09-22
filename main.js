@@ -5,7 +5,7 @@
  */
 $(function () {
     var view = new GameOfLifeView();
-    view.startUp();
+    //view.startUp();
 
     setUpButtonEvents(view);
 });

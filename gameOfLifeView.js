@@ -9,12 +9,6 @@ function GameOfLifeView() {
 }
 
 /**
- * Starts up the view by making all of the cells click-able.
- */
-GameOfLifeView.prototype.startUp = function () {
-};
-
-/**
  * Button event for starting the game.
  */
 GameOfLifeView.prototype.startGame = function () {
@@ -50,28 +44,30 @@ GameOfLifeView.prototype.incrementTwentyThreeGenerations = function () {
  * Resets the game with generation and population being 0.
  */
 GameOfLifeView.prototype.resetTheGame = function () {
-    var self = this;
-    var gameTable = $("#gameTable");
-    var rows = document.getElementById('gameTable').rows.length;
-    var cols = document.getElementById('gameTable').rows[0].cells.length;
+    var table = document.getElementById('gameTable');
+    var rows = table.rows.length;
+    var cols = table.rows[0].cells.length;
 
-    gameTable.find("tr").remove();
+    var old_tbody = document.querySelector('tbody');
+    var new_tbody = document.createElement('tbody');
+    old_tbody.parentNode.replaceChild(new_tbody, old_tbody);
 
-    self.controller.buildNewTable(rows, cols, false);
+    this.controller.buildNewTable(rows, cols, false);
 };
 
 /**
  * Starts the game over with a random population.
  */
 GameOfLifeView.prototype.randomPopulation = function () {
-    var self = this;
-    var gameTable = $("#gameTable");
-    var rows = document.getElementById('gameTable').rows.length;
-    var cells = gameTable.find("tr:first td").length;
+    var table = document.getElementById('gameTable');
+    var rows = table.rows.length;
+    var cols = table.rows[0].cells.length;
 
-    gameTable.find("tr").remove();
+    var old_tbody = document.querySelector('tbody');
+    var new_tbody = document.createElement('tbody');
+    old_tbody.parentNode.replaceChild(new_tbody, old_tbody);
 
-    self.controller.buildNewTable(rows, cells, true);
+    this.controller.buildNewTable(rows, cols, true);
 };
 
 /**
@@ -94,18 +90,14 @@ GameOfLifeView.prototype.buildVariableSizedTable = function (rows, cols) {
  * Adds row to table dynamically based on user interaction.
  */
 GameOfLifeView.prototype.addRow = function () {
-    var self = this;
-
-    self.controller.addRowToTheGrid();
+    this.controller.addRowToTheGrid();
 };
 
 /**
  * Adds column to table dynamically based on user interaction.
  */
 GameOfLifeView.prototype.addColumn = function () {
-    var self = this;
-
-    self.controller.addColumnToTheGrid();
+    this.controller.addColumnToTheGrid();
 };
 
 /**
@@ -115,19 +107,25 @@ GameOfLifeView.prototype.deleteLastRow = function () {
     var self = this;
     var table = document.getElementById('gameTable');
 
-    table.deleteRow(table.rows.length - 1);
-    self.controller.removeRowFromGrid();
+    if (table.rows.length <= 1) {
+        alert("Cannot delete entire table");
+    } else {
+        table.deleteRow(table.rows.length - 1);
+        self.controller.removeRowFromGrid();
+    }
 };
 
 /**
  * Deletes the last column of table dynamically based on user interaction.
  */
 GameOfLifeView.prototype.deleteLastColumn = function () {
-    var self = this;
     var table = document.getElementById('gameTable');
-
-    for (var currRow = 0; currRow < table.rows.length; currRow++) {
-        table.rows[currRow].deleteCell(table.rows[currRow].cells.length - 1);
+    if (table.rows[0].cells.length <= 1) {
+        alert("Cannot delete entire table");
+    } else {
+        for (var currRow = 0; currRow < table.rows.length; currRow++) {
+            table.rows[currRow].deleteCell(table.rows[currRow].cells.length - 1);
+        }
+        this.controller.removeColumnFromGrid();
     }
-    self.controller.removeColumnFromGrid();
 };

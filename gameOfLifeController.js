@@ -5,9 +5,7 @@
  * @constructor
  */
 function GameOfLifeController() {
-    this.grid = new Grid();
-    this.gameOfLife = new GameOfLife();
-    this.makeTableAndGrid(10, 10, true);
+    this.makeTableAndGrid(5, 15, true);
 }
 
 /**
@@ -20,6 +18,8 @@ function GameOfLifeController() {
  * If this is a random population or not.
  */
 GameOfLifeController.prototype.makeTableAndGrid = function (rows, cols, random) {
+    this.grid = new Grid();
+    this.gameOfLife = new GameOfLife();
     this.grid.buildGrid(rows, cols, random);
     this.board = this.buildGameBoard(this.grid.getLatestGrid());
     this.gameOfLife.newGameBoard(this.board);

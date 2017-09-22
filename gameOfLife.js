@@ -14,6 +14,9 @@ function GameOfLife() {
     this.populationText = $('#populationCount');
 
     this.populationThreshold = 2;
+    this.livesOnTwo = 2;
+    this.livesOnThree = 3;
+    this.resurrectionThreshold = 3;
     this.overCrowdingThreshold = 4;
 
     this.currBoard = [];
@@ -111,9 +114,18 @@ GameOfLife.prototype.setCellNextStates = function () {
                 aliveCount += currNeighbor.cellObject.getProofOfLife();
             });
 
+            //Overcrowding and starvation
             if (aliveCount < self.populationThreshold || aliveCount >= self.overCrowdingThreshold) {
                 currCell.cellObject.nextState = StatesOfLife.DEAD;
-            } else {
+            }
+
+            //Lives on
+            else if (aliveCount === self.livesOnTwo || aliveCount === self.livesOnThree) {
+                currCell.cellObject.nextState = StatesOfLife.ALIVE;
+            }
+
+            //Resurrection by use of the dark arts
+            else if (aliveCount === self.resurrectionThreshold && currCell.cellObject.getProofOfLife() === false) {
                 currCell.cellObject.nextState = StatesOfLife.ALIVE;
             }
 
@@ -254,7 +266,6 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
         });
     });
 
-    console.log("Got to update single cell");
     var newPopulation = this.population;
     (value === StatesOfLife.ALIVE) ? newPopulation++ : newPopulation--;
     this.updatePopulation(newPopulation);

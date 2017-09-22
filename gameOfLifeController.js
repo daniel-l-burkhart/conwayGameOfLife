@@ -5,7 +5,7 @@
  * @constructor
  */
 function GameOfLifeController() {
-    this.grid = [];
+    this.grid = new Grid();
     this.gameOfLife = new GameOfLife();
     this.makeTableAndGrid(10, 10, true);
 }
@@ -20,9 +20,9 @@ function GameOfLifeController() {
  * If this is a random population or not.
  */
 GameOfLifeController.prototype.makeTableAndGrid = function (rows, cols, random) {
-    this.grid = this.buildGrid(rows, cols, random);
-    this.board = this.buildTable(this.grid);
-    this.gameOfLife.newGameBoard(this.board);
+    this.grid.buildGrid(rows, cols, random);
+    this.board = this.buildGameBoard(this.grid.getLatestGrid());
+    this.gameOfLife.newGameBoard(this.grid.getLatestGrid());
 };
 
 /**
@@ -86,7 +86,8 @@ GameOfLifeController.prototype.updateASingleCell = function (id, state) {
  * Adds a row to the backend when the user adds a row on the view.
  */
 GameOfLifeController.prototype.addRowToTheGrid = function () {
-    this.addRowToBoard(this.grid);
+    this.grid.addRow();
+    this.addRowToBoard();
     this.gameOfLife.newGameBoard(this.board);
 };
 
@@ -94,6 +95,7 @@ GameOfLifeController.prototype.addRowToTheGrid = function () {
  * Adds a column to the backend when the user adds a col to the view.
  */
 GameOfLifeController.prototype.addColumnToTheGrid = function () {
+    this.grid.addColumn();
     this.addColumnToBoard();
     this.gameOfLife.newGameBoard(this.board);
 };
@@ -102,7 +104,7 @@ GameOfLifeController.prototype.addColumnToTheGrid = function () {
  * Removes a row to the backend when the user removes a row on the view.
  */
 GameOfLifeController.prototype.removeRowFromGrid = function () {
-    this.grid.pop();
+    this.grid.removeRow();
     this.board.pop();
     this.gameOfLife.newGameBoard(this.board);
 };
@@ -111,46 +113,11 @@ GameOfLifeController.prototype.removeRowFromGrid = function () {
  * Removes a column to the backend when the user removes a col to the view.
  */
 GameOfLifeController.prototype.removeColumnFromGrid = function () {
-
-    this.grid.forEach(function (row) {
-        row.pop();
-    });
-
+    this.grid.removeColumn();
     this.board.forEach(function (boardRow) {
         boardRow.pop();
     });
-
     this.gameOfLife.newGameBoard(this.board);
-};
-
-/**
- * Builds the gameMatrix - a 2D array - of 0s and 1s to denote dead or alive for each cell.
- * @param rowSize
- *      The number of rows.
- * @param colSize
- *      The number of columns
- * @param random
- *      If this population should be randomized.
- * @returns {Array}
- *      Returns an Array of Arrays that contains 0s or 1s.
- */
-GameOfLifeController.prototype.buildGrid = function (rowSize, colSize, random) {
-    var grid = [];
-
-    for (var currRow = 0; currRow < rowSize; currRow++) {
-        var row = [];
-        for (var currColumn = 0; currColumn < colSize; currColumn++) {
-            if (random) {
-                var startCondition = Math.round(Math.random() * 0.7);
-                row.push(startCondition);
-            }
-            else {
-                row.push(0);
-            }
-        }
-        grid.push(row);
-    }
-    return grid;
 };
 
 /**
@@ -161,7 +128,7 @@ GameOfLifeController.prototype.buildGrid = function (rowSize, colSize, random) {
  * @returns {Array}
  *      Returns the table.
  */
-GameOfLifeController.prototype.buildTable = function (grid) {
+GameOfLifeController.prototype.buildGameBoard = function (grid) {
 
     var self = this;
     var gameTable = $("#gameTable");
@@ -178,16 +145,11 @@ GameOfLifeController.prototype.buildTable = function (grid) {
                 var tdId = 'x' + xCoordinate + 'y' + yCoordinate;
 
                 td.attr('id', tdId);
-                td.on("click", function () {
-                    if (td.attr('class') === 'alive') {
-                        self.updateASingleCell(tdId, StatesOfLife.DEAD);
-                    } else {
-                        self.updateASingleCell(tdId, StatesOfLife.ALIVE);
-                    }
+                td.click(function () {
+                    self.setUpClickEventForCell(td);
                 });
 
                 tr.append(td);
-
                 gameTable.append(tr);
 
                 return {
@@ -207,21 +169,12 @@ GameOfLifeController.prototype.buildTable = function (grid) {
 GameOfLifeController.prototype.addRowToBoard = function () {
 
     var self = this;
+    var gameGrid = this.grid.getLatestGrid();
+    var yCoordinate = gameGrid.length - 1;
+
     var gameTable = $("#gameTable");
     var tr = $('<tr>');
-    var gameGrid = this.grid;
-
-    var row = [];
-    console.log(gameGrid[0].length);
-
-    for (var i = 0; i < gameGrid[0].length; i++) {
-        row.push(0);
-    }
-
-    gameGrid.push(row);
-    var yCoordinate = gameGrid.length - 1;
     tr.attr('id', yCoordinate);
-
 
     self.board.push(gameGrid[gameGrid.length - 1].map(
         function (item, xCoordinate) {
@@ -230,16 +183,11 @@ GameOfLifeController.prototype.addRowToBoard = function () {
             var tdId = 'x' + xCoordinate + 'y' + yCoordinate;
 
             td.attr('id', tdId);
-            td.on("click", function () {
-                if (td.attr('class') === 'alive') {
-                    self.updateASingleCell(tdId, StatesOfLife.DEAD);
-                } else {
-                    self.updateASingleCell(tdId, StatesOfLife.ALIVE);
-                }
+            td.click(function () {
+                self.setUpClickEventForCell(td);
             });
 
             tr.append(td);
-
             gameTable.append(tr);
 
             return {
@@ -255,13 +203,7 @@ GameOfLifeController.prototype.addRowToBoard = function () {
  */
 GameOfLifeController.prototype.addColumnToBoard = function () {
     var self = this;
-    var gameGrid = this.grid;
     var gameBoard = this.board;
-
-    gameGrid.forEach(function (row) {
-        row.push(0);
-    });
-
     var xCoord = document.getElementById('gameTable').rows[0].cells.length;
     var yCoord = 0;
 
@@ -273,18 +215,28 @@ GameOfLifeController.prototype.addColumnToBoard = function () {
         var tdId = 'x' + xCoord + 'y' + boardRow[0].y;
         td.attr('id', tdId);
 
-        td.on("click", function () {
-            if (td.attr('class') === 'alive') {
-                self.updateASingleCell(tdId, StatesOfLife.DEAD);
-            } else {
-                self.updateASingleCell(tdId, StatesOfLife.ALIVE);
-            }
+        td.click(function () {
+            self.setUpClickEventForCell(td);
         });
 
-        boardRow.push({x: xCoord, y: boardRow[0].y, cellObject: new Cell(0, td)});
+        boardRow.push({x: xCoord, y: boardRow[0].y, cellObject: new Cell(StatesOfLife.DEAD, td)});
         tr.append(td);
-
         yCoord++;
-
     });
+};
+
+/**
+ * Sets up click events on creation of each td cell.
+ * @param td
+ *      The table cell (td) element.
+ */
+GameOfLifeController.prototype.setUpClickEventForCell = function (td) {
+    var self = this;
+    var tdId = td.attr('id');
+
+    if (td.attr('class') === 'alive') {
+        self.updateASingleCell(tdId, StatesOfLife.DEAD);
+    } else {
+        self.updateASingleCell(tdId, StatesOfLife.ALIVE);
+    }
 };

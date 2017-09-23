@@ -1,5 +1,5 @@
 /**
- * Model "Class" that sets up the grid 2D array
+ * Model "Class" that sets up the grid 2D array for use to build the game board.
  * @constructor
  */
 function Grid() {

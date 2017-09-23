@@ -152,11 +152,7 @@ GameOfLifeController.prototype.buildGameBoard = function (grid) {
                 tr.append(td);
                 gameTable.append(tr);
 
-                return {
-                    x: xCoordinate,
-                    y: yCoordinate,
-                    cellObject: new Cell(item, td)
-                };
+                return self.makeNewBoardElement(xCoordinate, yCoordinate, item, td);
             }));
     });
 
@@ -190,11 +186,7 @@ GameOfLifeController.prototype.addRowToBoard = function () {
             tr.append(td);
             gameTable.append(tr);
 
-            return {
-                x: xCoordinate,
-                y: yCoordinate,
-                cellObject: new Cell(item, td)
-            };
+            return self.makeNewBoardElement(xCoordinate, yCoordinate, item, td);
         }));
 };
 
@@ -219,10 +211,34 @@ GameOfLifeController.prototype.addColumnToBoard = function () {
             self.setUpClickEventForCell(td);
         });
 
-        boardRow.push({x: xCoord, y: boardRow[0].y, cellObject: new Cell(StatesOfLife.DEAD, td)});
+        var newBoardCell = this.makeNewBoardElement(xCoord, boardRow[0].y, StatesOfLife.DEAD, td);
+
+        boardRow.push(newBoardCell);
         tr.append(td);
         yCoord++;
     });
+};
+
+/**
+ * Functional method that makes board element
+ *
+ * @param xCoordinate
+ *      The xCoordinate
+ * @param yCoordinate
+ *      The yCoordinate
+ * @param initialState
+ *      The cell's initial state
+ * @param td
+ *      The td on the HTML table.
+ * @returns {{x: *, y: *, cellObject: Cell}}
+ *      Returns a gameBoard "object."
+ */
+GameOfLifeController.prototype.makeNewBoardElement = function (xCoordinate, yCoordinate, initialState, td) {
+    return {
+        x: xCoordinate,
+        y: yCoordinate,
+        cellObject: new Cell(initialState, td)
+    }
 };
 
 /**

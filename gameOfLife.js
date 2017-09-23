@@ -6,18 +6,18 @@
  */
 function GameOfLife() {
 
+    this.populationThreshold = 2;
+    this.livesOnTwo = 2;
+    this.livesOnThree = 3;
+    this.resurrectionThreshold = 3;
+    this.overCrowdingThreshold = 4;
+
     this.currGeneration = 0;
     this.generationText = $('#generationCount');
     this.generationText.text(this.currGeneration);
 
     this.population = 0;
     this.populationText = $('#populationCount');
-
-    this.populationThreshold = 2;
-    this.livesOnTwo = 2;
-    this.livesOnThree = 3;
-    this.resurrectionThreshold = 3;
-    this.overCrowdingThreshold = 4;
 
     this.currBoard = [];
     this.keepWorking = false;
@@ -38,14 +38,16 @@ GameOfLife.prototype.newGameBoard = function (board) {
  * Starts the game
  */
 GameOfLife.prototype.startGame = function () {
-    this.keepWorking = true;
-    this.currGeneration = 1;
-    this.generationText.text(this.currGeneration);
+    if (this.currGeneration === 0) {
+        this.currGeneration = 1;
+    }
 
+    this.keepWorking = true;
+    this.generationText.text(this.currGeneration);
     var self = this;
     setInterval(function () {
-        self.setCellNextStates();
-    }, 1000);
+        self.setNextCellStates();
+    }, 500);
 
 };
 
@@ -87,15 +89,20 @@ GameOfLife.prototype.updatePopulation = function (newPopulation) {
  * Method to allow single update of table bypassing the boolean block that is used to stop the game.
  */
 GameOfLife.prototype.setCellNextStatesForSingleGeneration = function () {
+
+    if (this.currGeneration === 0) {
+        this.currGeneration = 1;
+    }
+
     this.keepWorking = true;
-    this.setCellNextStates();
+    this.setNextCellStates();
     this.keepWorking = false;
 };
 
 /**
  * Sets the "next" state of life for every cell based on their neighbors.
  */
-GameOfLife.prototype.setCellNextStates = function () {
+GameOfLife.prototype.setNextCellStates = function () {
 
     if (!this.keepWorking) {
         return;
@@ -115,17 +122,23 @@ GameOfLife.prototype.setCellNextStates = function () {
             });
 
             //Overcrowding and starvation
-            if (aliveCount < self.populationThreshold || aliveCount >= self.overCrowdingThreshold) {
+            if ((aliveCount < self.populationThreshold) ||
+                (aliveCount >= self.overCrowdingThreshold)) {
+
                 currCell.cellObject.nextState = StatesOfLife.DEAD;
             }
 
             //Lives on
-            else if (aliveCount === self.livesOnTwo || aliveCount === self.livesOnThree) {
+            else if ((aliveCount === self.livesOnTwo) ||
+                (aliveCount === self.livesOnThree)) {
+
                 currCell.cellObject.nextState = StatesOfLife.ALIVE;
             }
 
             //Resurrection by use of the dark arts
-            else if (aliveCount === self.resurrectionThreshold && currCell.cellObject.getProofOfLife() === false) {
+            else if ((aliveCount === self.resurrectionThreshold) &&
+                (currCell.cellObject.getProofOfLife() === false)) {
+
                 currCell.cellObject.nextState = StatesOfLife.ALIVE;
             }
 
@@ -154,37 +167,37 @@ GameOfLife.prototype.getNeighbors = function (x, y) {
     function getAllPossibleNeighbors() {
 
         var top = {
-            xCoord: x,
-            yCoord: y + 1
+            xCoordinate: x,
+            yCoordinate: y + 1
         };
         var left = {
-            xCoord: x - 1,
-            yCoord: y
+            xCoordinate: x - 1,
+            yCoordinate: y
         };
         var bottom = {
-            xCoord: x,
-            yCoord: y - 1
+            xCoordinate: x,
+            yCoordinate: y - 1
         };
         var right = {
-            xCoord: x + 1,
-            yCoord: y
+            xCoordinate: x + 1,
+            yCoordinate: y
         };
 
         var bottomLeft = {
-            xCoord: x - 1,
-            yCoord: y - 1
+            xCoordinate: x - 1,
+            yCoordinate: y - 1
         };
         var topLeft = {
-            xCoord: x - 1,
-            yCoord: y + 1
+            xCoordinate: x - 1,
+            yCoordinate: y + 1
         };
         var bottomRight = {
-            xCoord: x + 1,
-            yCoord: y - 1
+            xCoordinate: x + 1,
+            yCoordinate: y - 1
         };
         var topRight = {
-            xCoord: x + 1,
-            yCoord: y + 1
+            xCoordinate: x + 1,
+            yCoordinate: y + 1
         };
 
         return [
@@ -204,9 +217,9 @@ GameOfLife.prototype.getNeighbors = function (x, y) {
      *      Returns an array of the valid neighbors of the cell
      */
     function verifyIfNeighborExists(potentialNeighbor) {
-        if (localBoard[potentialNeighbor.yCoord] &&
-            localBoard[potentialNeighbor.yCoord][potentialNeighbor.xCoord]) {
-            realNeighbors.push(localBoard[potentialNeighbor.yCoord][potentialNeighbor.xCoord]);
+        if (localBoard[potentialNeighbor.yCoordinate] &&
+            localBoard[potentialNeighbor.yCoordinate][potentialNeighbor.xCoordinate]) {
+            realNeighbors.push(localBoard[potentialNeighbor.yCoordinate][potentialNeighbor.xCoordinate]);
         }
     }
 

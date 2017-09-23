@@ -16,7 +16,6 @@ $(function () {
 function setUpButtonEvents(view) {
 
     setUpGameButtonEvents(view);
-
     setUpTableButtonEvents(view);
 }
 

@@ -19,6 +19,10 @@ function Grid() {
  */
 Grid.prototype.buildGrid = function (rowSize, colSize, random) {
 
+    if (this.grid.length > 0) {
+        this.grid = [];
+    }
+
     for (var currRow = 0; currRow < rowSize; currRow++) {
         var row = [];
         for (var currColumn = 0; currColumn < colSize; currColumn++) {

@@ -282,3 +282,11 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
 
     this.updatePopulation(newPopulation);
 };
+
+/**
+ * Resets the population and generation when game is reset.
+ */
+GameOfLife.prototype.resetGeneration = function () {
+    this.currGeneration = 0;
+    this.generationText.text(this.currGeneration);
+};

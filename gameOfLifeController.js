@@ -5,24 +5,26 @@
  * @constructor
  */
 function GameOfLifeController() {
+    this.grid = new Grid();
+    this.gameOfLife = new GameOfLife();
     this.makeTableAndGrid(5, 15, true);
 }
 
 /**
  * Creates the table on the view and then creates the gameMatrix for the model.
+ *
  * @param rows
- * The number of rows
+ *      The number of rows
  * @param cols
- * The number of cols.
+ *      The number of cols.
  * @param random
- * If this is a random population or not.
+ *      If this is a random population or not.
  */
 GameOfLifeController.prototype.makeTableAndGrid = function (rows, cols, random) {
-    this.grid = new Grid();
-    this.gameOfLife = new GameOfLife();
     this.grid.buildGrid(rows, cols, random);
     this.board = this.buildGameBoard(this.grid.getLatestGrid());
     this.gameOfLife.newGameBoard(this.board);
+    this.gameOfLife.resetGeneration();
 };
 
 /**
@@ -60,6 +62,7 @@ GameOfLifeController.prototype.updateXGenerations = function (numberOfGeneration
 
 /**
  * Builds a new table for the game.
+ *
  * @param rows
  *      The rows of the table.
  * @param cols
@@ -73,6 +76,7 @@ GameOfLifeController.prototype.buildNewTable = function (rows, cols, random) {
 
 /**
  * Updates a single cell in the gameMatrix as the result of a click.
+ *
  * @param id
  *      The id of the cell.
  * @param state
@@ -147,7 +151,7 @@ GameOfLifeController.prototype.buildGameBoard = function (grid) {
 
                 td.attr('id', tdId);
                 td.click(function () {
-                    self.setUpClickEventForCell(td);
+                    self.setUpClickEventForCell(td, self);
                 });
 
                 tr.append(td);
@@ -181,7 +185,7 @@ GameOfLifeController.prototype.addRowToBoard = function () {
 
             td.attr('id', tdId);
             td.click(function () {
-                self.setUpClickEventForCell(td);
+                self.setUpClickEventForCell(td, self);
             });
 
             tr.append(td);
@@ -209,7 +213,7 @@ GameOfLifeController.prototype.addColumnToBoard = function () {
         td.attr('id', tdId);
 
         td.click(function () {
-            self.setUpClickEventForCell(td);
+            self.setUpClickEventForCell(td, self);
         });
 
         var newBoardCell = this.makeNewBoardElement(xCoord, boardRow[0].y, StatesOfLife.DEAD, td);
@@ -244,11 +248,13 @@ GameOfLifeController.prototype.makeNewBoardElement = function (xCoordinate, yCoo
 
 /**
  * Sets up click events on creation of each td cell.
+ *
  * @param td
  *      The table cell (td) element.
+ * @param self
+ *      Making sure the scope of the controller class persists.
  */
-GameOfLifeController.prototype.setUpClickEventForCell = function (td) {
-    var self = this;
+GameOfLifeController.prototype.setUpClickEventForCell = function (td, self) {
     var tdId = td.attr('id');
 
     if (td.attr('class') === 'alive') {

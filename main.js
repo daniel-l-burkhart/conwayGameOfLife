@@ -15,28 +15,25 @@ $(function () {
  */
 function setUpButtonEvents(view) {
 
-    setUpGameButtonEvents(view);
-    setUpTableButtonEvents(view);
-}
-
-/**
- * Sets up the events for the game buttons.
- * @param view
- *      The view instance.
- */
-function setUpGameButtonEvents(view) {
     var startButton = document.getElementById('startButton');
     var stopButton = document.getElementById('stopButton');
     var incrementOne = document.getElementById('incrementOne');
     var increment23 = document.getElementById('increment23');
     var resetGame = document.getElementById('resetGame');
     var randomPopulation = document.getElementById('randomPopulation');
+    var addRow = document.getElementById('addRow');
+    var addCol = document.getElementById('addCol');
+    var deleteRow = document.getElementById('deleteRow');
+    var deleteCol = document.getElementById('deleteCol');
+    var buildNewVariableTable = document.getElementById('buildNewVariableTable');
 
     startButton.addEventListener('click', function () {
+        toggleInterferingButtons(true);
         view.startGame();
     });
 
     stopButton.addEventListener('click', function () {
+        toggleInterferingButtons(false);
         view.stopGame()
     });
 
@@ -55,19 +52,6 @@ function setUpGameButtonEvents(view) {
     randomPopulation.addEventListener('click', function () {
         view.randomPopulation();
     });
-}
-
-/**
- * Sets up the events for the table buttons.
- * @param view
- *      The view instance.
- */
-function setUpTableButtonEvents(view) {
-    var addRow = document.getElementById('addRow');
-    var addCol = document.getElementById('addCol');
-    var deleteRow = document.getElementById('deleteRow');
-    var deleteCol = document.getElementById('deleteCol');
-    var buildNewVariableTable = document.getElementById('buildNewVariableTable');
 
     addRow.addEventListener('click', function () {
         view.addRow();
@@ -96,6 +80,35 @@ function setUpTableButtonEvents(view) {
         }
     });
 }
+
+/**
+ * Toggles "disabled" tag on buttons when game is running.
+ * @param boolValue
+ *      True or false. When true, buttons will not be click-able, false they will be.
+ */
+function toggleInterferingButtons(boolValue) {
+
+    var incrementOne = document.getElementById('incrementOne');
+    var increment23 = document.getElementById('increment23');
+    var resetGame = document.getElementById('resetGame');
+    var randomPopulation = document.getElementById('randomPopulation');
+    var addRow = document.getElementById('addRow');
+    var addCol = document.getElementById('addCol');
+    var deleteRow = document.getElementById('deleteRow');
+    var deleteCol = document.getElementById('deleteCol');
+    var buildNewVariableTable = document.getElementById('buildNewVariableTable');
+
+    incrementOne.disabled = boolValue;
+    increment23.disabled = boolValue;
+    resetGame.disabled = boolValue;
+    randomPopulation.disabled = boolValue;
+    addRow.disabled = boolValue;
+    addCol.disabled = boolValue;
+    deleteRow.disabled = boolValue;
+    deleteCol.disabled = boolValue;
+    buildNewVariableTable.disabled = boolValue;
+}
+
 
 
 

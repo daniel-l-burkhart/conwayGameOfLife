@@ -123,6 +123,7 @@ GameOfLifeController.prototype.removeColumnFromGrid = function () {
 /**
  * Dynamically builds the table for the view so that it matches the gameMatrix.
  * Also creates cell objects.
+ *
  * @param grid
  *      The 2D matrix that is used in the model to represent the life of the cells.
  * @returns {Array}
@@ -139,7 +140,7 @@ GameOfLifeController.prototype.buildGameBoard = function (grid) {
         tr.attr('id', yCoordinate);
 
         currBoard.push(row.map(
-            function (item, xCoordinate) {
+            function (stateValue, xCoordinate) {
 
                 var td = $('<td>');
                 var tdId = 'x' + xCoordinate + 'y' + yCoordinate;
@@ -152,7 +153,7 @@ GameOfLifeController.prototype.buildGameBoard = function (grid) {
                 tr.append(td);
                 gameTable.append(tr);
 
-                return self.makeNewBoardElement(xCoordinate, yCoordinate, item, td);
+                return self.makeNewBoardElement(xCoordinate, yCoordinate, stateValue, td);
             }));
     });
 

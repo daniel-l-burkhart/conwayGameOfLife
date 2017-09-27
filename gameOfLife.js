@@ -45,10 +45,10 @@ GameOfLife.prototype.startGame = function () {
     this.keepWorking = true;
     this.generationText.text(this.currGeneration);
     var self = this;
+
     setInterval(function () {
         self.setNextCellStates();
     }, 500);
-
 };
 
 /**
@@ -80,9 +80,8 @@ GameOfLife.prototype.getPopulation = function () {
  *      The new population of the game.
  */
 GameOfLife.prototype.updatePopulation = function (newPopulation) {
-    var self = this;
     this.population = newPopulation;
-    this.populationText.text(self.population);
+    this.populationText.text(this.population);
 };
 
 /**
@@ -115,30 +114,27 @@ GameOfLife.prototype.setNextCellStates = function () {
         currRow.forEach(function (currCell, xCoordinate) {
 
             var neighbors = self.getNeighbors(xCoordinate, yCoordinate);
-            var aliveCount = 0;
+            var livingNeighbors = 0;
 
             neighbors.forEach(function (currNeighbor) {
-                aliveCount += currNeighbor.cellObject.getProofOfLife();
+                livingNeighbors += currNeighbor.cellObject.getProofOfLife();
             });
 
             //Overcrowding and starvation
-            if ((aliveCount < self.populationThreshold) ||
-                (aliveCount >= self.overCrowdingThreshold)) {
-
+            if ((livingNeighbors < self.populationThreshold) ||
+                (livingNeighbors >= self.overCrowdingThreshold)) {
                 currCell.cellObject.nextState = StatesOfLife.DEAD;
             }
 
             //Lives on
-            else if ((aliveCount === self.livesOnTwo) ||
-                (aliveCount === self.livesOnThree)) {
-
+            else if ((livingNeighbors === self.livesOnTwo) ||
+                (livingNeighbors === self.livesOnThree)) {
                 currCell.cellObject.nextState = StatesOfLife.ALIVE;
             }
 
             //Resurrection by use of the dark arts
-            else if ((aliveCount === self.resurrectionThreshold) &&
+            else if ((livingNeighbors === self.resurrectionThreshold) &&
                 (currCell.cellObject.getProofOfLife() === false)) {
-
                 currCell.cellObject.nextState = StatesOfLife.ALIVE;
             }
 
@@ -233,11 +229,9 @@ GameOfLife.prototype.getNeighbors = function (x, y) {
 GameOfLife.prototype.updateGeneration = function () {
     var self = this;
     this.keepWorking = false;
-
-    var localBoard = this.currBoard;
     var newPopulation = 0;
 
-    localBoard.forEach(function (currRow) {
+    this.currBoard.forEach(function (currRow) {
         currRow.forEach(function (currCell) {
 
             if (currCell.cellObject.nextState !== currCell.cellObject.getProofOfLife() || !self.currGeneration) {
@@ -280,6 +274,11 @@ GameOfLife.prototype.updateSingleCell = function (id, value) {
     });
 
     var newPopulation = this.population;
-    (value === StatesOfLife.ALIVE) ? newPopulation++ : newPopulation--;
+    if (value === StatesOfLife.ALIVE) {
+        newPopulation++;
+    } else if (value === StatesOfLife.DEAD) {
+        newPopulation--;
+    }
+
     this.updatePopulation(newPopulation);
 };

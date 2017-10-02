@@ -10,7 +10,7 @@ function GameOfLife() {
     this.livesOnTwo = 2;
     this.livesOnThree = 3;
     this.resurrectionThreshold = 3;
-    this.overCrowdingThreshold = 4;
+    this.overCrowdingThreshold = 3;
 
     this.currGeneration = 0;
     this.generationText = $('#generationCount');
@@ -120,24 +120,30 @@ GameOfLife.prototype.setNextCellStates = function () {
                 livingNeighbors += currNeighbor.cellObject.getProofOfLife();
             });
 
-            //Overcrowding and starvation
-            if ((livingNeighbors < self.populationThreshold) ||
-                (livingNeighbors >= self.overCrowdingThreshold)) {
-                currCell.cellObject.nextState = StatesOfLife.DEAD;
-            }
+            if (currCell.cellObject.getProofOfLife()) {
 
-            //Lives on
-            else if ((livingNeighbors === self.livesOnTwo) ||
-                (livingNeighbors === self.livesOnThree)) {
-                currCell.cellObject.nextState = StatesOfLife.ALIVE;
-            }
+                // Starvation
+                if (livingNeighbors < self.populationThreshold) {
+                    currCell.cellObject.nextState = StatesOfLife.DEAD;
+                }
 
-            //Resurrection by use of the dark arts
-            else if ((livingNeighbors === self.resurrectionThreshold) &&
-                (currCell.cellObject.getProofOfLife() === false)) {
-                currCell.cellObject.nextState = StatesOfLife.ALIVE;
-            }
+                //Overcrowding
+                else if (livingNeighbors > self.overCrowdingThreshold) {
+                    currCell.cellObject.nextState = StatesOfLife.DEAD;
+                }
 
+                //Lives on
+                else if ((livingNeighbors === self.livesOnTwo) || (livingNeighbors === self.livesOnThree)) {
+                    currCell.cellObject.nextState = StatesOfLife.ALIVE;
+                }
+
+            } else {
+
+                //Resurrection by use of the dark arts
+                if (livingNeighbors === self.resurrectionThreshold) {
+                    currCell.cellObject.nextState = StatesOfLife.ALIVE;
+                }
+            }
         });
     });
 

@@ -7,7 +7,7 @@
 function GameOfLifeController() {
     this.grid = new Grid();
     this.gameOfLife = new GameOfLife();
-    this.makeTableAndGrid(5, 15, true);
+    this.makeTableAndGrid(10, 20, true);
 }
 
 /**
@@ -216,7 +216,7 @@ GameOfLifeController.prototype.addColumnToBoard = function () {
             self.setUpClickEventForCell(td, self);
         });
 
-        var newBoardCell = this.makeNewBoardElement(xCoord, boardRow[0].y, StatesOfLife.DEAD, td);
+        var newBoardCell = self.makeNewBoardElement(xCoord, boardRow[0].y, StatesOfLife.DEAD, td);
 
         boardRow.push(newBoardCell);
         tr.append(td);
